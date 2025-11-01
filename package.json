@@ -1,6 +1,6 @@
 {
   "name": "tonl",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "Token-Optimized Notation Language - A text-first, LLM-friendly serialization format",
   "homepage": "https://github.com/ersinkoc/tonl",
   "repository": {
@@ -11,7 +11,11 @@
     "url": "https://github.com/ersinkoc/tonl/issues"
   },
   "files": [
-    "dist/",
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.js.map",
+    "!dist/**/*.cmd",
+    "!dist/**/*.ps1",
     "docs/",
     "README.md",
     "LICENSE"
@@ -26,7 +30,7 @@
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "tonl": "dist/tonl.cmd"
+    "tonl": "dist/src/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -36,7 +40,7 @@
     "bench-tokens": "npm run build && node dist/bench/bench-tokens.js",
     "bench-comprehensive": "npm run build && node dist/bench/comprehensive-bench.js",
     "link": "npm run build && npm link",
-    "clean": "rm -rf dist"
+    "clean": "rimraf dist"
   },
   "keywords": [
     "serialization",
@@ -52,6 +56,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "rimraf": "^6.0.1",
     "typescript": "^5.0.0"
   },
   "dependencies": {}

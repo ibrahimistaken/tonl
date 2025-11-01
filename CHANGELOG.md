@@ -5,6 +5,75 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2025-11-03
+
+### Fixed
+
+- **Binary Path**: Corrected `bin` field in package.json to point to `dist/src/cli.js`
+
+---
+
+## [0.3.3] - 2025-11-03
+
+### Added
+
+- **Format Command**: `tonl format <file.tonl> [--pretty] [options]` for reformatting TONL files
+- **Comprehensive Format Tests**: 22 new tests covering all format command scenarios (100% coverage)
+- **Cross-Platform Support**: Full Windows, macOS, and Linux compatibility
+  - Fixed CLI binary path for cross-platform execution
+  - Added `rimraf` for cross-platform directory cleanup
+  - Proper shebang (`#!/usr/bin/env node`) for Unix systems
+
+### CLI Enhancements
+
+- `tonl format` command with options:
+  - `--pretty`: Format with proper indentation (default: enabled)
+  - `--indent <number>`: Custom indentation (default: 2 spaces)
+  - `--out <file>`: Write to file instead of stdout
+  - `--delimiter`: Preserve or change delimiter
+  - `--include-types`: Add type hints to headers
+  - `--version`: Override TONL version
+
+### Format Capabilities
+
+- Parse and re-encode TONL files with consistent formatting
+- Preserve data integrity through round-trip conversion
+- Handle edge cases: empty arrays, null values, multiline strings
+- Support for nested structures and large datasets
+- Graceful handling of malformed TONL data
+
+### Testing Results
+
+- **62/62 tests passing** (100% success rate)
+- **22 new format tests** covering:
+  - Basic functionality (stdout, file output, data integrity)
+  - Indentation options (2-space, 4-space, nested)
+  - Delimiter preservation (comma, pipe, tab)
+  - Edge cases (empty arrays, nulls, special chars, large arrays)
+  - Error handling (invalid files, non-existent files)
+  - Version preservation and override
+  - Real-world scenarios (e-commerce, user management)
+
+### Fixed
+
+- **Cross-Platform Binary Issues**: CLI now works correctly on macOS and Linux
+- **Test Directory Creation**: Format tests automatically create test directories
+- **Package.json Files Field**: Excludes platform-specific `.cmd` and `.ps1` files
+
+### Changed
+
+- Updated `package.json` bin field to point to `dist/cli.js` (cross-platform)
+- Replaced `rm -rf` with `rimraf` in clean script
+- Enhanced `.gitignore` with test temporary files
+
+### Documentation Updates
+
+- Updated CLI help text with format command examples
+- Added format command to README.md
+- Updated ROADMAP.md to mark Pretty Print as completed
+
+---
+
 ## [0.2.0] - 2025-10-06
 
 ### Added

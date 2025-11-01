@@ -15,6 +15,7 @@ interface CLIOptions {
   smart?: boolean;
   stats?: boolean;
   strict?: boolean;
+  pretty?: boolean;
   tokenizer?: "gpt-5" | "gpt-4.5" | "gpt-4o" | "claude-3.5" | "gemini-2.0" | "llama-4" | "o200k" | "cl100k";
 }
 
@@ -34,6 +35,7 @@ function parseArgs(args: string[]): { command: string; file: string; options: CL
       case "encode":
       case "decode":
       case "stats":
+      case "format":
         command = arg;
         break;
       case "--out":
@@ -67,6 +69,9 @@ function parseArgs(args: string[]): { command: string; file: string; options: CL
       case "--strict":
         options.strict = true;
         break;
+      case "--pretty":
+        options.pretty = true;
+        break;
       case "--tokenizer":
         if (["gpt-5", "gpt-4.5", "gpt-4o", "claude-3.5", "gemini-2.0", "llama-4", "o200k", "cl100k"].includes(nextArg)) {
           options.tokenizer = nextArg as any;
@@ -84,7 +89,7 @@ function parseArgs(args: string[]): { command: string; file: string; options: CL
   }
 
   if (!command || !file) {
-    throw new Error("Usage: tonl <encode|decode|stats> <file> [options]");
+    throw new Error("Usage: tonl <encode|decode|stats|format> <file> [options]");
   }
 
   return { command, file, options };
@@ -207,9 +212,39 @@ function main() {
         break;
       }
 
+      case "format": {
+        if (!file.endsWith('.tonl')) {
+          console.error("❌ Error: Format command requires a .tonl file");
+          process.exit(1);
+        }
+
+        // Parse the TONL file
+        const jsonData = decodeTONL(input, {
+          delimiter: options.delimiter,
+          strict: options.strict
+        });
+
+        // Re-encode with pretty formatting
+        const formattedOutput = encodeTONL(jsonData, {
+          delimiter: options.delimiter,
+          includeTypes: options.includeTypes,
+          version: options.version,
+          indent: options.indent || 2,
+          singleLinePrimitiveLists: true
+        });
+
+        if (options.out) {
+          writeFileSync(options.out, formattedOutput);
+          console.log(`✅ Formatted to ${options.out}`);
+        } else {
+          console.log(formattedOutput);
+        }
+        break;
+      }
+
       default:
         console.error(`❌ Error: Unknown command '${command}'`);
-        console.log("Available commands: encode, decode, stats");
+        console.log("Available commands: encode, decode, stats, format");
         process.exit(1);
     }
 
@@ -228,6 +263,7 @@ Usage:
   tonl encode <file.json> [--out <file.tonl>] [options]
   tonl decode <file.tonl> [--out <file.json>] [--strict]
   tonl stats  <file.{json,tonl}> [--tokenizer <type>]
+  tonl format <file.tonl> [--pretty] [--out <file.tonl>] [options]
 
 Options:
   --out <file>           Output file (default: stdout)
@@ -238,12 +274,15 @@ Options:
   --smart               Use smart encoding (auto-optimize)
   --stats               Show compression statistics
   --strict              Enable strict parsing mode
+  --pretty              Format with proper indentation (for format command)
   --tokenizer <type>    Token estimation (gpt-5, gpt-4.5, gpt-4o, claude-3.5, gemini-2.0, llama-4, o200k, cl100k)
 
 Examples:
   tonl encode data.json --out data.tonl --smart --stats
   tonl decode data.tonl --out data.json --strict
   tonl stats data.json --tokenizer gpt-5
+  tonl format data.tonl --pretty --out formatted.tonl
+  tonl format data.tonl --pretty --indent 4
 `);
   process.exit(0);
 }

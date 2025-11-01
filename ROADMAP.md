@@ -2,16 +2,16 @@
 
 This document outlines the future development plans for TONL (Token-Optimized Notation Language).
 
-## Current Status (v0.3.0) - ✅ Released
+## Current Status (v0.3.4) - ✅ Released
 
-**October 6, 2025**
+**November 3, 2025**
 
 ### ✅ Completed Features
 - [x] Core encode/decode functionality
-- [x] CLI with encode/decode/stats commands
+- [x] CLI with encode/decode/stats/format commands
 - [x] Smart encoding with delimiter optimization
 - [x] Type inference and schema hints
-- [x] Complete test suite (40/40 tests passing)
+- [x] Complete test suite (62/62 tests passing)
 - [x] Performance benchmarks
 - [x] Full documentation
 - [x] Round-trip JSON compatibility
@@ -20,6 +20,8 @@ This document outlines the future development plans for TONL (Token-Optimized No
 - [x] 2025 LLM Tokenizer Updates (16 models supported)
 - [x] Real-world token estimation algorithms
 - [x] Enhanced CLI with comprehensive tokenizer support
+- [x] Pretty print formatting for TONL files
+- [x] Cross-platform CLI support (Windows, macOS, Linux)
 
 ---
 
@@ -29,7 +31,7 @@ This document outlines the future development plans for TONL (Token-Optimized No
 
 #### Enhanced CLI & Tooling
 - [ ] **Batch Processing**: `tonl batch *.json --output-dir ./tonl/`
-- [ ] **Pretty Print**: `tonl format --pretty data.tonl`
+- [x] **Pretty Print**: `tonl format --pretty data.tonl` ✅
 - [ ] **Format Detection**: Automatic format detection for unknown files
 
 #### Performance & Optimization
@@ -108,6 +110,8 @@ This document outlines the future development plans for TONL (Token-Optimized No
 |---------|-------------|-------|
 | v0.2.0 | Oct 6, 2025 | ✅ Initial Release |
 | v0.3.0 | Oct 16, 2025 | ✅ 2025 Tokenizer Updates |
+| v0.3.3 | Nov 3, 2025 | ✅ Format Command & Cross-Platform |
+| v0.3.4 | Nov 3, 2025 | ✅ Binary Path Fix |
 | v0.4.0 | Feb 2025 | Enhanced CLI & Developer Experience |
 | v0.5.0 | May 2025 | Streaming API |
 | v0.6.0 | Aug 2025 | Multi-Language Support |

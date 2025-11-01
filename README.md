@@ -52,6 +52,9 @@ tonl encode data.json --out data.tonl --smart --stats
 # Decode TONL back to JSON
 tonl decode data.tonl --out data.json
 
+# Format TONL files with pretty print
+tonl format data.tonl --pretty --out formatted.tonl
+
 # Compare sizes and token costs
 tonl stats data.json --tokenizer gpt-5
 ```
@@ -185,8 +188,9 @@ npm run bench-tokens   # Token estimation comparison
 ### CLI Development
 
 ```bash
-npm link               # Install tonl command locally
-tonl encode test.json   # Test the CLI
+npm link                        # Install tonl command locally
+tonl encode test.json           # Test encoding
+tonl format data.tonl --pretty  # Test formatting
 ```
 
 ## 📝 Examples
