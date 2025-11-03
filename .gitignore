@@ -192,3 +192,4 @@ coverage/
 *.local
 
 node_modules/
+.claude/
