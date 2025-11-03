@@ -53,6 +53,7 @@
     "bench": "npm run build && node dist/bench/bench-bytes.js",
     "bench-tokens": "npm run build && node dist/bench/bench-tokens.js",
     "bench-comprehensive": "npm run build && node dist/bench/comprehensive-bench.js",
+    "bench-streaming": "npm run build && node --experimental-top-level-await dist/bench/bench-streaming.js",
     "link": "npm run build && npm link",
     "clean": "rimraf dist"
   },
