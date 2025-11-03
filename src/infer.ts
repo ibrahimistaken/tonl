@@ -45,6 +45,11 @@ export function inferPrimitiveType(value: unknown): TONLTypeHint {
 export function coerceValue(value: string, type: TONLTypeHint): any {
   const unquoted = value.startsWith('"') ? value.slice(1, -1).replace(/""/g, '"') : value;
 
+  // Handle null values for all types
+  if (unquoted === "null" || unquoted.trim() === "") {
+    return null;
+  }
+
   switch (type) {
     case "null":
       return null;
