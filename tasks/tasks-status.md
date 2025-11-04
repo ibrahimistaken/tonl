@@ -14,7 +14,7 @@
 ### By Feature
 | Feature | ID | Tasks | Completed | Progress |
 |---------|----|----|----------|----------|
-| Query API | F001 | 10 | 5 | 🟡 50% |
+| Query API | F001 | 10 | 6 | 🟡 60% |
 | Modification API | F002 | 10 | 0 | 🔴 0% |
 | Indexing System | F003 | 8 | 0 | 🔴 0% |
 | Streaming Query | F004 | 6 | 0 | 🔴 0% |
@@ -27,14 +27,14 @@
 
 ### Overall Progress
 ```
-[█████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 12.2%
+[██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 14.6%
 ```
 
 ---
 
 ## Feature F001: Query API (v0.6.0)
 
-**Status:** 🟡 In Progress | **Priority:** P1 - CRITICAL | **Progress:** 5/10
+**Status:** 🟡 In Progress | **Priority:** P1 - CRITICAL | **Progress:** 6/10
 
 ### Tasks
 
@@ -73,16 +73,17 @@
   - Blocks: T006, T007
   - Completion Date: 2025-11-04
 
-- [ ] **T006** - API Documentation & Examples (P2, 3 days)
-  - Status: 🟡 In Progress
+- [x] **T006** - API Documentation & Examples (P2, 3 days) ✅ COMPLETED
+  - Status: 🟢 Completed
   - Assignee: Claude
   - Dependencies: T005 ✅
   - Blocks: None
+  - Completion Date: 2025-11-04
 
 - [ ] **T007** - Integration Tests (P1, 4 days)
-  - Status: 🔴 Not Started
-  - Assignee: TBD
-  - Dependencies: T005
+  - Status: 🟡 In Progress
+  - Assignee: Claude
+  - Dependencies: T005 ✅
   - Blocks: T010
 
 - [ ] **T008** - CLI Integration (P2, 2 days)
