@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TONL - Token-Optimized Notation Language</title>
-    <meta name="description" content="A text-first, LLM-friendly serialization format. 38% smaller tokens than JSON.">
+    <meta name="description" content="A text-first, LLM-friendly serialization format. Up to 50% smaller tokens than JSON.">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -66,6 +66,36 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        /* Hero Background Pattern */
+        .hero-bg {
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(5, 150, 105, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 2px 2px, rgba(148, 163, 184, 0.2) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px;
+            position: relative;
+        }
+
+        /* Floating Orbs */
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.15;
+            animation: float-gentle 25s ease-in-out infinite;
+        }
+
+        @keyframes float-gentle {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+            25% { transform: translate(20px, -20px) scale(1.1); opacity: 0.2; }
+            50% { transform: translate(-10px, -40px) scale(0.9); opacity: 0.1; }
+            75% { transform: translate(-25px, -10px) scale(1.05); opacity: 0.18; }
+        }
+
+        .orb-1 { top: 10%; left: 5%; width: 400px; height: 400px; background: linear-gradient(135deg, #10b981, #059669); animation-delay: 0s; }
+        .orb-2 { top: 50%; right: 10%; width: 300px; height: 300px; background: linear-gradient(135deg, #3b82f6, #2563eb); animation-delay: -8s; }
+        .orb-3 { bottom: 10%; left: 30%; width: 250px; height: 250px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); animation-delay: -16s; }
     </style>
 </head>
 <body class="bg-white text-slate-900">
@@ -114,8 +144,13 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="py-24 bg-gradient-to-b from-slate-50 to-white">
-        <div class="max-w-7xl mx-auto px-6">
+    <section class="py-24 bg-gradient-to-b from-slate-50 to-white hero-bg overflow-hidden relative">
+        <!-- Floating Background Orbs -->
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="max-w-4xl">
                 <div class="inline-flex items-center px-4 py-1.5 bg-emerald-50 border border-emerald-200 rounded-full text-sm font-medium text-emerald-700 mb-8 animate-fade-in-up">
                     <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse-slow"></span>
@@ -129,7 +164,7 @@
 
                 <p class="text-xl md:text-2xl text-slate-600 mb-12 leading-relaxed">
                     A text-first, LLM-friendly serialization format.<br>
-                    <span class="font-semibold gradient-text">38% fewer tokens</span> than JSON. <span class="font-semibold text-slate-900">Zero dependencies</span>. Built for the AI era.
+                    <span class="font-semibold gradient-text">Up to 50% fewer tokens</span> than JSON. <span class="font-semibold text-slate-900">Zero dependencies</span>. Built for the AI era.
                 </p>
 
                 <div class="flex flex-wrap items-center gap-4 mb-12">
@@ -150,8 +185,8 @@
                 <!-- Stats Grid with Counter Animation -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 reveal">
                     <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
-                        <div class="text-2xl font-bold text-emerald-600 mb-1" data-count="38">0</div>
-                        <div class="text-sm text-slate-600">% Token Savings</div>
+                        <div class="text-2xl font-bold text-emerald-600 mb-1">32-50%</div>
+                        <div class="text-sm text-slate-600">Token Savings</div>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm hover:shadow-md transition">
                         <div class="text-2xl font-bold text-emerald-600 mb-1" data-count="496">0</div>
@@ -249,7 +284,7 @@
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-slate-700 font-semibold text-lg">TONL Format</span>
-                        <span class="text-emerald-600 text-sm font-semibold">216 tokens (-38%)</span>
+                        <span class="text-emerald-600 text-sm font-semibold">216 tokens (-38% typical)</span>
                     </div>
                     <div class="bg-emerald-50/50 border-2 border-emerald-500 rounded-lg p-6 h-[500px] overflow-auto">
                         <pre class="text-slate-700 text-sm leading-relaxed font-medium"><code>#version 1.0
@@ -263,7 +298,7 @@ users[4]{id,name,email,age,role,active,department}:
                         <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
                             <div class="bg-emerald-500 h-3 transition-all duration-500" style="width: 62%"></div>
                         </div>
-                        <div class="text-sm text-emerald-600 font-medium mt-2">62% of JSON token usage - Save 38%!</div>
+                        <div class="text-sm text-emerald-600 font-medium mt-2">50-68% of JSON token usage - Save up to 50%!</div>
                     </div>
                 </div>
             </div>
@@ -272,7 +307,7 @@ users[4]{id,name,email,age,role,active,department}:
             <div class="max-w-5xl mx-auto bg-slate-900 rounded-xl p-8 md:p-12 shadow-md">
                 <div class="grid md:grid-cols-3 gap-8 items-center">
                     <div class="text-center">
-                        <div class="text-emerald-400 text-6xl font-bold mb-2">↓ 38%</div>
+                        <div class="text-emerald-400 text-6xl font-bold mb-2">↓ 32-50%</div>
                         <div class="text-slate-300 text-lg">Token Reduction</div>
                     </div>
                     <div class="text-center">
@@ -306,7 +341,7 @@ users[4]{id,name,email,age,role,active,department}:
                     </div>
                     <h3 class="text-xl font-semibold text-slate-900 mb-3">Compact Format</h3>
                     <p class="text-slate-600 mb-4 leading-relaxed">
-                        38% fewer tokens than JSON. Reduces LLM API costs and speeds up processing with smart delimiter optimization.
+                        32-50% fewer tokens than JSON. Reduces LLM API costs and speeds up processing with smart delimiter optimization.
                     </p>
                     <div class="bg-slate-50 rounded-md px-3 py-2">
                         <code class="text-sm text-slate-700">users[2]{id,name}</code>
@@ -451,7 +486,7 @@ users[4]{id,name,email,age,role,active,department}:
                             <svg class="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
-                            <span>Reduce prompt token costs by 38% instantly</span>
+                            <span>Reduce prompt token costs by up to 50%</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <svg class="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -546,6 +581,78 @@ users[4]{id,name,email,age,role,active,department}:
                             <span>Generate TypeScript types automatically</span>
                         </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LLM Integration Guide -->
+    <section class="py-20 bg-gradient-to-b from-emerald-50 to-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center px-4 py-2 bg-emerald-100 border border-emerald-300 rounded-full text-sm font-semibold text-emerald-800 mb-6">
+                        🤖 For LLM Developers
+                    </div>
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Teaching LLMs to Read TONL</h2>
+                    <p class="text-xl text-slate-600">Copy this prompt to enable any LLM to parse TONL data</p>
+                </div>
+
+                <div class="bg-white border-2 border-emerald-200 rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-emerald-600 px-6 py-4 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-white">System Prompt Template</h3>
+                            <p class="text-emerald-100 text-sm mt-1">Add this to your LLM system prompt when sending TONL data</p>
+                        </div>
+                        <button onclick="copyLLMPrompt()" class="px-4 py-2 bg-white/20 hover:bg-white/30 border border-white/30 rounded-lg text-white text-sm font-semibold transition">
+                            📋 Copy Prompt
+                        </button>
+                    </div>
+                    <div class="p-6 bg-slate-900">
+                        <pre class="text-slate-300 text-sm leading-relaxed overflow-x-auto"><code id="llm-prompt-code">The following data is in TONL format. Parse it as follows:
+
+• Lines with [count]{fields}: are array headers, data rows follow
+• Lines with {fields}: are object headers, field: value pairs follow
+• Indentation (2 spaces) indicates nesting levels
+• Default delimiter is comma unless #delimiter header specifies otherwise
+• Types: unquoted numbers/booleans, quoted strings, null
+
+Example:
+users[2]{id,name,role}:
+  1, Alice, admin
+  2, Bob, user
+
+This represents: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"name":"Bob","role":"user"}]}</code></pre>
+                    </div>
+                    <div class="bg-emerald-50 px-6 py-4 border-t border-emerald-200">
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            💡 <span class="font-semibold">Pro tip:</span> This prompt is ~150 tokens. Adding it to your system prompt is negligible compared to the 32-50% savings on your data!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-8 grid md:grid-cols-2 gap-6">
+                    <div class="bg-white border border-slate-200 rounded-lg p-6">
+                        <h4 class="font-semibold text-slate-900 mb-3">📖 Full Documentation</h4>
+                        <p class="text-slate-600 text-sm mb-4">Detailed LLM integration guide with more examples and edge cases</p>
+                        <a href="https://github.com/ersinkoc/tonl/blob/main/LLM_PROMPT.md" target="_blank" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1">
+                            View on GitHub
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-lg p-6">
+                        <h4 class="font-semibold text-slate-900 mb-3">🧪 Try It Now</h4>
+                        <p class="text-slate-600 text-sm mb-4">Test this prompt with real data in our interactive playground</p>
+                        <a href="examples.html" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm flex items-center gap-1">
+                            Open Playground
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -966,7 +1073,7 @@ tonl decode filtered.tonl --out result.json</code></pre>
                     <div class="text-4xl">💬</div>
                     <div>
                         <p class="text-slate-200 text-lg leading-relaxed mb-4">
-                            "TONL has dramatically reduced our LLM API costs. We're processing the same amount of data but paying 38% less.
+                            "TONL has dramatically reduced our LLM API costs. We're processing the same amount of data but paying 32-50% less depending on the data structure.
                             The query API is incredibly powerful, and the zero-dependency design means no supply chain risks."
                         </p>
                         <div class="flex items-center gap-3">
@@ -996,7 +1103,7 @@ tonl decode filtered.tonl --out result.json</code></pre>
                 <!-- FAQ 1 -->
                 <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
                     <button @click="open = open === 1 ? null : 1" class="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-slate-50 transition">
-                        <span class="font-semibold text-slate-900 text-lg">How does TONL achieve 38% token savings?</span>
+                        <span class="font-semibold text-slate-900 text-lg">How does TONL achieve 32-50% token savings?</span>
                         <svg class="w-5 h-5 text-slate-400 transition-transform" :class="{ 'rotate-180': open === 1 }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -1119,7 +1226,7 @@ tonl decode filtered.tonl --out result.json</code></pre>
             </div>
 
             <h2 class="text-5xl font-bold text-white mb-6">
-                Ready to Save 38% on LLM Costs?
+                Ready to Save Up to 50% on LLM Costs?
             </h2>
             <p class="text-2xl text-slate-300 mb-12 leading-relaxed">
                 Join developers who are building smarter, more efficient AI applications with TONL
@@ -1261,6 +1368,16 @@ tonl decode filtered.tonl --out result.json</code></pre>
                 }, 30);
             });
         });
+
+        // Copy LLM prompt
+        function copyLLMPrompt() {
+            const promptText = document.getElementById('llm-prompt-code').textContent;
+            navigator.clipboard.writeText(promptText);
+            event.target.textContent = '✓ Copied!';
+            setTimeout(() => {
+                event.target.textContent = '📋 Copy Prompt';
+            }, 2000);
+        }
     </script>
 
     <!-- Footer -->
