@@ -521,7 +521,9 @@ class PathParser {
       TokenType.EQ, TokenType.NEQ,
       TokenType.GT, TokenType.LT,
       TokenType.GTE, TokenType.LTE,
-      TokenType.AND, TokenType.OR
+      TokenType.AND, TokenType.OR,
+      TokenType.CONTAINS, TokenType.STARTS_WITH,
+      TokenType.ENDS_WITH, TokenType.MATCHES
     ].includes(type);
   }
 
@@ -537,7 +539,11 @@ class PathParser {
       [TokenType.GTE]: '>=',
       [TokenType.LTE]: '<=',
       [TokenType.AND]: '&&',
-      [TokenType.OR]: '||'
+      [TokenType.OR]: '||',
+      [TokenType.CONTAINS]: 'contains',
+      [TokenType.STARTS_WITH]: 'startsWith',
+      [TokenType.ENDS_WITH]: 'endsWith',
+      [TokenType.MATCHES]: 'matches'
     };
 
     return map[type] || '==';

@@ -5,7 +5,7 @@
 
 import { test, describe } from 'node:test';
 import assert from 'node:assert';
-import { TONLDocument } from '../../dist/src/index.js';
+import { TONLDocument } from '../../dist/index.js';
 
 describe('Query API Integration - T007', () => {
   // E-commerce scenario

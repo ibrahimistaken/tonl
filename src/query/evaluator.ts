@@ -52,11 +52,13 @@ export class QueryEvaluator {
       return this.context.root;
     }
 
-    // Check cache
-    const cacheKey = this.generateCacheKey(ast);
-    const cached = this.cache.get(cacheKey);
-    if (cached !== undefined) {
-      return cached;
+    // Check cache if enabled
+    if (this.context.enableCache) {
+      const cacheKey = this.generateCacheKey(ast);
+      const cached = this.cache.get(cacheKey);
+      if (cached !== undefined) {
+        return cached;
+      }
     }
 
     // Handle root node
@@ -68,8 +70,11 @@ export class QueryEvaluator {
     // Evaluate the path
     const result = this.evaluatePath(this.context.root, ast, startIndex, this.context);
 
-    // Cache result
-    this.cache.set(cacheKey, result);
+    // Cache result if enabled
+    if (this.context.enableCache) {
+      const cacheKey = this.generateCacheKey(ast);
+      this.cache.set(cacheKey, result);
+    }
 
     return result;
   }
@@ -99,8 +104,8 @@ export class QueryEvaluator {
       return undefined;
     }
 
-    // Check if this is a multi-value result (array from wildcard, recursive, or slice)
-    const isMultiValue = node.type === 'wildcard' || node.type === 'recursive' || node.type === 'slice';
+    // Check if this is a multi-value result (array from wildcard, recursive, slice, or filter)
+    const isMultiValue = node.type === 'wildcard' || node.type === 'recursive' || node.type === 'slice' || node.type === 'filter';
 
     // If there are more nodes to process and this was a multi-value operation
     if (startIndex + 1 < ast.length && isMultiValue && Array.isArray(nodeResult)) {
@@ -398,7 +403,8 @@ export class QueryEvaluator {
       ...('index' in node && { index: node.index }),
       ...('start' in node && { start: node.start }),
       ...('end' in node && { end: node.end }),
-      ...('step' in node && { step: node.step })
+      ...('step' in node && { step: node.step }),
+      ...('expression' in node && { expression: node.expression })
     })));
   }
 
@@ -433,7 +439,13 @@ export function evaluate(
     enableCache?: boolean;
   }
 ): any {
-  const evaluator = new QueryEvaluator(document, options);
+  // Disable caching by default for convenience function to avoid cache pollution
+  // across different documents. Users should create a QueryEvaluator instance
+  // directly if they want to cache results for the same document.
+  const evaluator = new QueryEvaluator(document, {
+    ...options,
+    enableCache: options?.enableCache ?? false
+  });
   return evaluator.evaluate(ast);
 }
 
@@ -441,7 +453,7 @@ export function evaluate(
  * Check if a path exists in a document
  */
 export function exists(document: TONLValue, ast: PathNode[]): boolean {
-  const evaluator = new QueryEvaluator(document);
+  const evaluator = new QueryEvaluator(document, { enableCache: false });
   return evaluator.exists(ast);
 }
 
@@ -449,6 +461,6 @@ export function exists(document: TONLValue, ast: PathNode[]): boolean {
  * Get the type of value at a path
  */
 export function typeOf(document: TONLValue, ast: PathNode[]): string | undefined {
-  const evaluator = new QueryEvaluator(document);
+  const evaluator = new QueryEvaluator(document, { enableCache: false });
   return evaluator.typeOf(ast);
 }

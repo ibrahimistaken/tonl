@@ -81,8 +81,18 @@ export function tokenize(input: string): Token[] {
       value += input[position++];
     }
 
+    // Check if it's a keyword operator
+    const keywordMap: Record<string, TokenType> = {
+      'contains': TokenType.CONTAINS,
+      'startsWith': TokenType.STARTS_WITH,
+      'endsWith': TokenType.ENDS_WITH,
+      'matches': TokenType.MATCHES
+    };
+
+    const tokenType = keywordMap[value] || TokenType.IDENTIFIER;
+
     return {
-      type: TokenType.IDENTIFIER,
+      type: tokenType,
       value,
       position: start,
       length: value.length
@@ -450,6 +460,10 @@ export function getOperatorPrecedence(token: Token): number {
     [TokenType.LT]: 4,
     [TokenType.GTE]: 4,
     [TokenType.LTE]: 4,
+    [TokenType.CONTAINS]: 4,
+    [TokenType.STARTS_WITH]: 4,
+    [TokenType.ENDS_WITH]: 4,
+    [TokenType.MATCHES]: 4,
     [TokenType.NOT]: 5
   };
 

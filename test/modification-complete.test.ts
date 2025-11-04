@@ -47,14 +47,20 @@ describe('Modification API Complete', () => {
   describe('Chaining', () => {
     test('should chain modifications', () => {
       const doc = TONLDocument.fromJSON({ a: 1, b: 2, items: [] });
+
+      // Chain set operations (they return 'this')
       doc.set('a', 10)
-         .set('b', 20)
-         .push('items', 'first')
-         .push('items', 'second');
+         .set('b', 20);
+
+      // push() returns number (array length), so call separately
+      const len1 = doc.push('items', 'first');
+      const len2 = doc.push('items', 'second');
 
       assert.strictEqual(doc.get('a'), 10);
       assert.strictEqual(doc.get('b'), 20);
       assert.strictEqual(doc.get('items').length, 2);
+      assert.strictEqual(len1, 1);
+      assert.strictEqual(len2, 2);
     });
   });
 });

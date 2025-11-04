@@ -233,6 +233,12 @@ export enum TokenType {
   OR = 'OR',                  // ||
   NOT = 'NOT',                // !
 
+  // String operators
+  CONTAINS = 'CONTAINS',      // contains
+  STARTS_WITH = 'STARTS_WITH', // startsWith
+  ENDS_WITH = 'ENDS_WITH',    // endsWith
+  MATCHES = 'MATCHES',        // matches
+
   // End of input
   EOF = 'EOF'
 }

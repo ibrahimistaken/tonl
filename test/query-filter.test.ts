@@ -44,6 +44,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with == operator on number', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age == 30)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
@@ -51,12 +52,14 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with == operator on boolean', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 4);
     });
 
     test('should filter with == operator on false', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.active == false)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
@@ -64,6 +67,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with != operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.role != "user")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 3);
@@ -71,12 +75,14 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with != on number', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age != 30)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 4);
     });
 
     test('should handle == with non-existent property', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.nonExistent == "value")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 0);
@@ -86,10 +92,11 @@ describe('Filter Expression Engine - T003', () => {
       const data = { items: [{ value: null }, { value: 1 }, { value: null }] };
       const ast = parsePath('items[?(@.value == null)]').ast;
       const result = evaluate(data, ast);
-      assert.strictEqual(result.length, 0); // null == null won't match literals
+      assert.strictEqual(result.length, 2); // null === null is true in JavaScript
     });
 
     test('should filter with exact string match', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name == "Bob")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
@@ -97,6 +104,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle case-sensitive equality', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name == "alice")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 0); // Case sensitive
@@ -109,6 +117,7 @@ describe('Filter Expression Engine - T003', () => {
 
   describe('Comparison Operators (>, <, >=, <=)', () => {
     test('should filter with > operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 30)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 2);
@@ -116,6 +125,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with < operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age < 30)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 2);
@@ -123,12 +133,14 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with >= operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age >= 30)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 3);
     });
 
     test('should filter with <= operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age <= 30)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 3);
@@ -149,18 +161,21 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle >= with equal value', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age >= 25)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.some(u => u.age === 25));
     });
 
     test('should handle <= with equal value', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age <= 25)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.some(u => u.age === 25));
     });
 
     test('should compare strings alphabetically', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name > "Carol")]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.some(u => u.name === 'Dave'));
@@ -168,6 +183,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with multiple comparisons', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 25)]').ast;
       const result1 = evaluate(testData, ast);
       const ast2 = parsePath('users[?(@.age < 40)]').ast;
@@ -177,18 +193,21 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle > with boundary value', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 45)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 0);
     });
 
     test('should handle >= with maximum value', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age >= 45)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
     });
 
     test('should compare with id field', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.id > 3)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 2);
@@ -215,6 +234,7 @@ describe('Filter Expression Engine - T003', () => {
 
   describe('Logical Operators (&&, ||, !)', () => {
     test('should filter with AND operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 25 && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
@@ -222,12 +242,14 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with OR operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.role == "admin" || @.role == "editor")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 3);
     });
 
     test('should filter with NOT operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(!@.active)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
@@ -235,37 +257,43 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle complex AND expression', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 25 && @.age < 40 && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length >= 2);
     });
 
     test('should handle complex OR expression', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age < 26 || @.age > 40)]').ast;
       const result = evaluate(testData, ast);
-      assert.ok(result.includes(users[1])); // Bob, 25
-      assert.ok(result.includes(users[4])); // Eve, 45
+      assert.ok(result.some(u => u.name === 'Bob')); // Bob, 25
+      assert.ok(result.some(u => u.name === 'Eve')); // Eve, 45
     });
 
     test('should handle AND with different properties', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.role == "admin" && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 2);
     });
 
     test('should handle OR with same property', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name == "Alice" || @.name == "Bob")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 2);
     });
 
     test('should support nested NOT', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(!(@.role == "user"))]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.every(u => u.role !== 'user'));
     });
 
     test('should handle short-circuit AND evaluation', () => {
+      const testData = getTestData();
       // If first condition is false, second shouldn't be evaluated
       const ast = parsePath('users[?(@.active == false && @.age > 30)]').ast;
       const result = evaluate(testData, ast);
@@ -273,6 +301,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle short-circuit OR evaluation', () => {
+      const testData = getTestData();
       // If first condition is true, second shouldn't be evaluated
       const ast = parsePath('users[?(@.active == true || @.age > 100)]').ast;
       const result = evaluate(testData, ast);
@@ -280,30 +309,35 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should combine AND and OR', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 25 && (@.role == "admin" || @.role == "editor"))]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
     });
 
     test('should handle multiple NOT operators', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(!@.active)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
     });
 
     test('should handle NOT with comparison', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(!(@.age < 30))]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.every(u => u.age >= 30));
     });
 
     test('should handle triple AND', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.active == true && @.age > 25 && @.role == "admin")]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.every(u => u.active && u.age > 25 && u.role === 'admin'));
     });
 
     test('should handle alternating AND/OR', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.role == "admin" || @.role == "editor" && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
@@ -316,12 +350,14 @@ describe('Filter Expression Engine - T003', () => {
 
   describe('String Operators', () => {
     test('should use contains operator (binary)', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.email contains "@company.com")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 4);
     });
 
     test('should use startsWith operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name startsWith "A")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
@@ -329,6 +365,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should use endsWith operator', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name endsWith "e")]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.some(u => u.name === 'Alice'));
@@ -337,18 +374,21 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should use matches operator (regex)', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.email matches "^[a-z]+@company")]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length >= 4);
     });
 
     test('should handle contains with no matches', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.email contains "@invalid.com")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 0);
     });
 
     test('should handle startsWith case sensitive', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name startsWith "a")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 0); // No lowercase 'a'
@@ -362,6 +402,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle regex with special characters', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.email matches "\\\\..+@")]').ast;
       const result = evaluate(testData, ast);
       // Regex errors should return false, not crash
@@ -369,6 +410,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should combine contains with AND', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.email contains "@company" && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
@@ -403,12 +445,14 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle matches with simple pattern', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name matches "^[A-Z]")]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 5); // All names start with uppercase
     });
 
     test('should combine multiple string operators', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.name startsWith "A" || @.name endsWith "e")]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length >= 3);
@@ -429,6 +473,7 @@ describe('Filter Expression Engine - T003', () => {
 
   describe('Complex Nested Filters', () => {
     test('should handle deeply nested AND/OR', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 25 && (@.role == "admin" || @.role == "editor") && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
@@ -447,6 +492,7 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should filter with multiple conditions', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age >= 25 && @.age <= 35 && @.active == true)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
@@ -465,18 +511,21 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle NOT with complex expression', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(!(@.age < 30 && @.role == "user"))]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
     });
 
     test('should combine all operator types', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 25 && @.email contains "@company" && !@.active == false)]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length >= 0);
     });
 
     test('should handle parenthesized expressions', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?( (@.age > 30 || @.role == "admin") && @.active == true )]').ast;
       const result = evaluate(testData, ast);
       assert.ok(result.length > 0);
@@ -528,24 +577,28 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle filter that matches nothing', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.age > 100)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 0);
     });
 
     test('should handle filter that matches all', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.id > 0)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 5);
     });
 
     test('should handle boolean property directly', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.active)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 4);
     });
 
     test('should handle negated boolean property', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(!@.active)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
@@ -608,12 +661,14 @@ describe('Filter Expression Engine - T003', () => {
     });
 
     test('should handle false boolean', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.active == false)]').ast;
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 1);
     });
 
     test('should handle multiple properties in filter', () => {
+      const testData = getTestData();
       const ast = parsePath('users[?(@.id == @.id)]').ast; // Always true
       const result = evaluate(testData, ast);
       assert.strictEqual(result.length, 5);
