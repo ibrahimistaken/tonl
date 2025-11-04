@@ -87,6 +87,12 @@
                     <a @click="tab = 'llm'" :class="tab === 'llm' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition">
                         🤖 LLM Prompt
                     </a>
+                    <a @click="tab = 'schema'" :class="tab === 'schema' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition">
+                        ✅ Schema
+                    </a>
+                    <a @click="tab = 'streaming'" :class="tab === 'streaming' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition">
+                        🌊 Streaming
+                    </a>
                     <a @click="tab = 'impl'" :class="tab === 'impl' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition" id="implementation">
                         Implementation
                     </a>
@@ -143,6 +149,55 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                         </div>
                     </div>
 
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Encoding Options</h3>
+                        <div class="space-y-4">
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">Compact Mode (Default)</h4>
+                                <div class="code-wrapper">
+                                    <div class="bg-slate-900 rounded-lg p-4">
+                                        <code class="text-emerald-400 text-sm">encodeTONL(data)</code>
+                                    </div>
+                                    <button class="copy-code-btn" onclick="copyCode(this, 'encodeTONL(data)')">Copy</button>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-2">Maximum token savings (38-50%), no type hints</p>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">With Type Hints</h4>
+                                <div class="code-wrapper">
+                                    <div class="bg-slate-900 rounded-lg p-4">
+                                        <code class="text-emerald-400 text-sm">encodeTONL(data, { includeTypes: true })</code>
+                                    </div>
+                                    <button class="copy-code-btn" onclick="copyCode(this, 'encodeTONL(data, { includeTypes: true })')">Copy</button>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-2">Schema validation enabled (~32% savings)</p>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">Custom Delimiter</h4>
+                                <div class="code-wrapper">
+                                    <div class="bg-slate-900 rounded-lg p-4">
+                                        <code class="text-emerald-400 text-sm">encodeTONL(data, { delimiter: '|' })</code>
+                                    </div>
+                                    <button class="copy-code-btn" onclick="copyCode(this, 'encodeTONL(data, { delimiter: \\'|\\' })')">Copy</button>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-2">Use pipe, tab, or semicolon delimiters</p>
+                            </div>
+
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">Smart Encoding</h4>
+                                <div class="code-wrapper">
+                                    <div class="bg-slate-900 rounded-lg p-4">
+                                        <code class="text-emerald-400 text-sm">encodeSmart(data)</code>
+                                    </div>
+                                    <button class="copy-code-btn" onclick="copyCode(this, 'encodeSmart(data)')">Copy</button>
+                                </div>
+                                <p class="text-slate-600 text-sm mt-2">Auto-selects best delimiter and options</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-6">
                         <p class="text-emerald-900 font-semibold mb-2">Need more?</p>
                         <p class="text-emerald-800">Check out the <a href="https://github.com/ersinkoc/tonl/blob/main/docs/GETTING_STARTED.md" class="underline font-medium" target="_blank">full getting started guide</a> on GitHub.</p>
@@ -153,37 +208,131 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                 <div x-show="tab === 'api'" class="space-y-8">
                     <div>
                         <h1 class="text-4xl font-bold text-slate-900 mb-4">API Reference</h1>
-                        <p class="text-lg text-slate-600">Core functions and TONLDocument class</p>
+                        <p class="text-lg text-slate-600">Complete TONLDocument API and core functions</p>
                     </div>
 
-                    <div class="space-y-6">
-                        <div class="border border-slate-200 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-slate-900 mb-3">TONLDocument.fromJSON()</h3>
-                            <p class="text-slate-600 mb-3">Create document from JavaScript data</p>
-                            <div class="bg-slate-50 rounded-md p-3">
-                                <code class="text-sm text-slate-700">TONLDocument.fromJSON(data)</code>
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-semibold text-slate-900">📦 Creation Methods</h3>
+
+                        <div class="border border-emerald-200 rounded-lg p-5 bg-emerald-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">TONLDocument.fromJSON(data)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Create TONL document from JavaScript object</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-emerald-400 text-xs">const doc = TONLDocument.fromJSON({ users: [...] })</code>
                             </div>
                         </div>
 
-                        <div class="border border-slate-200 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-slate-900 mb-3">query()</h3>
-                            <p class="text-slate-600 mb-3">Query data with JSONPath-like expressions</p>
-                            <div class="bg-slate-50 rounded-md p-3">
-                                <code class="text-sm text-slate-700">doc.query('users[?(@.age > 18)]')</code>
+                        <div class="border border-emerald-200 rounded-lg p-5 bg-emerald-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">TONLDocument.fromTONL(text)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Parse TONL text into document</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-emerald-400 text-xs">const doc = TONLDocument.fromTONL(tonlText)</code>
                             </div>
                         </div>
 
-                        <div class="border border-slate-200 rounded-lg p-6">
-                            <h3 class="text-xl font-semibold text-slate-900 mb-3">set() / delete()</h3>
-                            <p class="text-slate-600 mb-3">Modify data at any path</p>
-                            <div class="bg-slate-50 rounded-md p-3">
-                                <code class="text-sm text-slate-700">doc.set('user.age', 31).delete('user.temp')</code>
+                        <div class="border border-emerald-200 rounded-lg p-5 bg-emerald-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">TONLDocument.load(path)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Load TONL file from disk</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-emerald-400 text-xs">const doc = await TONLDocument.load('data.tonl')</code>
                             </div>
                         </div>
                     </div>
 
-                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
-                        View complete API reference
+                    <div class="space-y-4 mt-8">
+                        <h3 class="text-2xl font-semibold text-slate-900">🔍 Query Methods</h3>
+
+                        <div class="border border-blue-200 rounded-lg p-5 bg-blue-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">query(path)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">JSONPath-like queries with filters</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-blue-300 text-xs">doc.query('users[?(@.role == "admin")]')</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-blue-200 rounded-lg p-5 bg-blue-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">get(path)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Get single value at path</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-blue-300 text-xs">doc.get('users[0].name') // "Alice"</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-blue-200 rounded-lg p-5 bg-blue-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">has(path)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Check if path exists</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-blue-300 text-xs">doc.has('users[0].email') // true/false</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mt-8">
+                        <h3 class="text-2xl font-semibold text-slate-900">✏️ Modification Methods</h3>
+
+                        <div class="border border-purple-200 rounded-lg p-5 bg-purple-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">set(path, value)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Update value at path</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-purple-300 text-xs">doc.set('users[0].age', 31)</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-purple-200 rounded-lg p-5 bg-purple-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">delete(path)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Remove field or array element</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-purple-300 text-xs">doc.delete('user.tempField')</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-purple-200 rounded-lg p-5 bg-purple-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">push(path, value)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Append to array</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-purple-300 text-xs">doc.push('users', newUser)</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-purple-200 rounded-lg p-5 bg-purple-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">merge(path, object)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Deep merge objects</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-purple-300 text-xs">doc.merge('config', updates)</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 mt-8">
+                        <h3 class="text-2xl font-semibold text-slate-900">💾 Save & Export</h3>
+
+                        <div class="border border-orange-200 rounded-lg p-5 bg-orange-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">toTONL()</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Export as TONL string</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-orange-300 text-xs">const tonlText = doc.toTONL()</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-orange-200 rounded-lg p-5 bg-orange-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">toJSON()</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Export as JavaScript object</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-orange-300 text-xs">const obj = doc.toJSON()</code>
+                            </div>
+                        </div>
+
+                        <div class="border border-orange-200 rounded-lg p-5 bg-orange-50/30">
+                            <h4 class="text-lg font-semibold text-slate-900 mb-2">save(path)</h4>
+                            <p class="text-slate-600 mb-3 text-sm">Atomic file save with backup</p>
+                            <div class="bg-slate-900 rounded-lg p-3">
+                                <code class="text-orange-300 text-xs">await doc.save('output.tonl')</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6">
+                        View complete API reference (50+ methods)
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                         </svg>
@@ -225,7 +374,7 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                     </div>
 
                     <div>
-                        <h3 class="text-xl font-semibold text-slate-900 mb-4">Operators</h3>
+                        <h3 class="text-xl font-semibold text-slate-900 mb-4">Filter Operators</h3>
                         <div class="grid md:grid-cols-3 gap-4">
                             <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
                                 <div class="text-sm font-semibold text-slate-900 mb-2">Comparison</div>
@@ -241,6 +390,39 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                             </div>
                         </div>
                     </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-slate-900 mb-4">Advanced Examples</h3>
+                        <div class="space-y-3">
+                            <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                                <div class="font-mono text-sm text-slate-800 mb-1">users[?(@.age > 25 && @.active)]</div>
+                                <div class="text-xs text-slate-600">Multiple conditions with AND</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                                <div class="font-mono text-sm text-slate-800 mb-1">users[0:3]</div>
+                                <div class="text-xs text-slate-600">Array slicing (first 3 items)</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                                <div class="font-mono text-sm text-slate-800 mb-1">products[?(@.price < 100)]</div>
+                                <div class="text-xs text-slate-600">Filter by numeric value</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                                <div class="font-mono text-sm text-slate-800 mb-1">users[?(@.name contains "Smith")]</div>
+                                <div class="text-xs text-slate-600">String contains filter</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                                <div class="font-mono text-sm text-slate-800 mb-1">$.store.products[*].price</div>
+                                <div class="text-xs text-slate-600">All product prices</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/QUERY_API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6">
+                        View complete query documentation
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
                 </div>
 
                 <!-- CLI Tools -->
@@ -340,6 +522,163 @@ This represents: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"nam
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                         </svg>
                     </a>
+                </div>
+
+                <!-- Schema Validation -->
+                <div x-show="tab === 'schema'" class="space-y-8">
+                    <div>
+                        <h1 class="text-4xl font-bold text-slate-900 mb-4">Schema Validation</h1>
+                        <p class="text-lg text-slate-600">Define and validate data structures with TONL schemas</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="font-semibold text-blue-900 mb-2">✅ What is Schema Validation?</h3>
+                        <p class="text-blue-800 text-sm">Schemas let you define data structure, types, and constraints. TONL validates data against schemas and can auto-generate TypeScript types.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Basic Schema Example</h3>
+                        <div class="code-wrapper">
+                            <div class="bg-slate-900 rounded-lg p-6">
+                                <pre class="text-slate-300 text-sm leading-relaxed"><code>@schema v1
+@strict true
+
+User: obj
+  id: u32 required
+  username: str required min:3 max:20
+  email: str required pattern:email
+  age: u32? min:13 max:150
+  roles: list&lt;str&gt; required
+
+users: list&lt;User&gt; required min:1</code></pre>
+                            </div>
+                            <button class="copy-code-btn" onclick="copyCode(this, '@schema v1\\n@strict true\\n\\nUser: obj\\n  id: u32 required\\n  username: str required min:3 max:20\\n  email: str required pattern:email\\n  age: u32? min:13 max:150\\n  roles: list<str> required\\n\\nusers: list<User> required min:1')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Validation</h3>
+                        <div class="code-wrapper">
+                            <div class="bg-slate-900 rounded-lg p-6">
+                                <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> { parseSchema, validateTONL } <span class="text-purple-400">from</span> <span class="text-emerald-400">'tonl/schema'</span>;
+
+<span class="text-slate-500">// Load and parse schema</span>
+<span class="text-purple-400">const</span> schema = parseSchema(schemaContent);
+
+<span class="text-slate-500">// Validate data</span>
+<span class="text-purple-400">const</span> result = validateTONL(data, schema);
+
+<span class="text-purple-400">if</span> (!result.valid) {
+  result.errors.forEach(<span class="text-purple-400">err</span> => {
+    console.error(<span class="text-emerald-400">`${err.field}: ${err.message}`</span>);
+  });
+}</code></pre>
+                            </div>
+                            <button class="copy-code-btn" onclick="copyCode(this, 'import { parseSchema, validateTONL } from \\'tonl/schema\\';\\n\\nconst schema = parseSchema(schemaContent);\\nconst result = validateTONL(data, schema);\\n\\nif (!result.valid) {\\n  result.errors.forEach(err => {\\n    console.error(`${err.field}: ${err.message}`);\\n  });\\n}')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Type System</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                <h4 class="text-sm font-semibold text-slate-900 mb-2">Primitive Types</h4>
+                                <code class="text-xs text-slate-600 block">str, u32, i32, u64, i64, f32, f64, bool</code>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                <h4 class="text-sm font-semibold text-slate-900 mb-2">Complex Types</h4>
+                                <code class="text-xs text-slate-600 block">obj, list, list&lt;T&gt;, optional (field?)</code>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                <h4 class="text-sm font-semibold text-slate-900 mb-2">String Constraints</h4>
+                                <code class="text-xs text-slate-600 block">min, max, pattern, email, url</code>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                <h4 class="text-sm font-semibold text-slate-900 mb-2">Number Constraints</h4>
+                                <code class="text-xs text-slate-600 block">min, max, positive, negative, integer</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/SCHEMA_SPECIFICATION.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
+                        View full schema specification
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Streaming API -->
+                <div x-show="tab === 'streaming'" class="space-y-8">
+                    <div>
+                        <h1 class="text-4xl font-bold text-slate-900 mb-4">Streaming API</h1>
+                        <p class="text-lg text-slate-600">Process multi-GB files with constant memory usage</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="font-semibold text-blue-900 mb-2">🌊 Why Streaming?</h3>
+                        <p class="text-blue-800 text-sm">Stream processing allows you to work with files larger than available RAM. TONL's line-based format is perfect for streaming - process records one at a time with &lt;100MB memory usage.</p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Stream Encoding</h3>
+                        <div class="code-wrapper">
+                            <div class="bg-slate-900 rounded-lg p-6">
+                                <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> { createEncodeStream } <span class="text-purple-400">from</span> <span class="text-emerald-400">'tonl/stream'</span>;
+<span class="text-purple-400">import</span> { createReadStream, createWriteStream } <span class="text-purple-400">from</span> <span class="text-emerald-400">'fs'</span>;
+
+<span class="text-slate-500">// Stream encode large JSON files</span>
+createReadStream(<span class="text-emerald-400">'huge.json'</span>)
+  .pipe(createEncodeStream({ smart: <span class="text-orange-400">true</span> }))
+  .pipe(createWriteStream(<span class="text-emerald-400">'huge.tonl'</span>));</code></pre>
+                            </div>
+                            <button class="copy-code-btn" onclick="copyCode(this, 'import { createEncodeStream } from \\'tonl/stream\\';\\nimport { createReadStream, createWriteStream } from \\'fs\\';\\n\\ncreateReadStream(\\'huge.json\\')\\n  .pipe(createEncodeStream({ smart: true }))\\n  .pipe(createWriteStream(\\'huge.tonl\\'));')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Stream Query</h3>
+                        <div class="code-wrapper">
+                            <div class="bg-slate-900 rounded-lg p-6">
+                                <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> { streamQuery } <span class="text-purple-400">from</span> <span class="text-emerald-400">'tonl/stream'</span>;
+
+<span class="text-slate-500">// Query huge files efficiently</span>
+<span class="text-purple-400">await</span> streamQuery(
+  <span class="text-emerald-400">'large-dataset.tonl'</span>,
+  <span class="text-emerald-400">'users[?(@.active)]'</span>,
+  (chunk) => {
+    <span class="text-slate-500">// Process each matching chunk</span>
+    console.log(chunk);
+  }
+);
+
+<span class="text-slate-500">// Memory stays constant ~10MB</span></code></pre>
+                            </div>
+                            <button class="copy-code-btn" onclick="copyCode(this, 'import { streamQuery } from \\'tonl/stream\\';\\n\\nawait streamQuery(\\n  \\'large-dataset.tonl\\',\\n  \\'users[?(@.active)]\\',\\n  (chunk) => {\\n    console.log(chunk);\\n  }\\n);')">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Performance Metrics</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                                <div class="text-3xl font-bold text-emerald-600 mb-1">~50 MB/s</div>
+                                <div class="text-sm text-slate-600">Processing Speed</div>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                                <div class="text-3xl font-bold text-emerald-600 mb-1">&lt;100 MB</div>
+                                <div class="text-sm text-slate-600">Memory Usage</div>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                                <div class="text-3xl font-bold text-emerald-600 mb-1">10+ GB</div>
+                                <div class="text-sm text-slate-600">File Size Support</div>
+                            </div>
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                                <div class="text-3xl font-bold text-emerald-600 mb-1">O(1)</div>
+                                <div class="text-sm text-slate-600">Memory Complexity</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Implementation -->
