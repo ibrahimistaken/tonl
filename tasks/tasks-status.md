@@ -3,8 +3,8 @@
 **Last Updated:** 2025-11-04
 **Total Tasks:** 41
 **Completed:** 4
-**In Progress:** 0
-**Not Started:** 37
+**In Progress:** 1
+**Not Started:** 36
 **Blocked:** 0
 
 ---
@@ -67,9 +67,9 @@
   - Completion Date: 2025-11-04
 
 - [ ] **T005** - TONLDocument Class (P1, 5 days)
-  - Status: 🔴 Not Started
-  - Assignee: TBD
-  - Dependencies: T001, T002, T003, T004
+  - Status: 🟡 In Progress
+  - Assignee: Claude
+  - Dependencies: T001 ✅, T002 ✅, T003 ✅, T004 ✅
   - Blocks: T006, T007
 
 - [ ] **T006** - API Documentation & Examples (P2, 3 days)
