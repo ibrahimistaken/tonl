@@ -1,36 +1,526 @@
-# TONL API Documentation
+# TONL API Documentation v1.0.0
+
+**Version:** 1.0.0
+**Status:** Stable & Production Ready
+**Last Updated:** 2025-11-04
 
 This document provides detailed API documentation for the TONL TypeScript library.
 
+---
+
+## Table of Contents
+
+1. [TONLDocument API](#tonldocument-api) (Primary Interface)
+2. [Core Functions](#core-functions) (Legacy/Lower-level)
+3. [Utility Functions](#utility-functions)
+4. [Streaming API](#streaming-api-v075)
+5. [Schema API](#schema-api-v080)
+6. [Query API](#query-api-v060)
+7. [Modification API](#modification-api-v065)
+8. [Navigation API](#navigation-api-v060)
+9. [Indexing API](#indexing-api-v070)
+10. [File Operations](#file-operations)
+11. [Error Handling](#error-handling)
+12. [Performance](#performance-considerations)
+
+---
+
+## TONLDocument API
+
+**TONLDocument** is the primary class for working with TONL data. It provides a high-level interface for querying, modifying, and navigating TONL documents.
+
+### Static Factory Methods
+
+#### `TONLDocument.parse(tonlText, options?)`
+
+Parse a TONL string into a document.
+
+```typescript
+static parse(tonlText: string, options?: DecodeOptions): TONLDocument
+```
+
+**Example:**
+```typescript
+const doc = TONLDocument.parse(`
+#version 1.0
+users[2]{id,name}:
+  1, Alice
+  2, Bob
+`);
+```
+
+---
+
+#### `TONLDocument.fromJSON(data)`
+
+Create a document from JavaScript data.
+
+```typescript
+static fromJSON(data: any): TONLDocument
+```
+
+**Example:**
+```typescript
+const doc = TONLDocument.fromJSON({
+  users: [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' }
+  ]
+});
+```
+
+---
+
+#### `TONLDocument.fromFile(path)`
+
+Load a TONL document from a file (async).
+
+```typescript
+static async fromFile(path: string): Promise<TONLDocument>
+```
+
+**Example:**
+```typescript
+const doc = await TONLDocument.fromFile('data.tonl');
+```
+
+---
+
+#### `TONLDocument.fromFileSync(path)`
+
+Load a TONL document from a file (sync).
+
+```typescript
+static fromFileSync(path: string): TONLDocument
+```
+
+**Example:**
+```typescript
+const doc = TONLDocument.fromFileSync('data.tonl');
+```
+
+---
+
+### Query Methods
+
+#### `get(pathExpression)`
+
+Get a value at a specific path.
+
+```typescript
+get(pathExpression: string): any
+```
+
+**Examples:**
+```typescript
+doc.get('user.name')           // 'Alice'
+doc.get('users[0]')            // { id: 1, name: 'Alice' }
+doc.get('users[-1]')           // Last user
+```
+
+---
+
+#### `query(pathExpression)`
+
+Query the document with advanced expressions.
+
+```typescript
+query(pathExpression: string): any
+```
+
+**Examples:**
+```typescript
+doc.query('users[*].name')                    // ['Alice', 'Bob']
+doc.query('users[?(@.role == "admin")]')      // Filter users
+doc.query('$..email')                         // All emails recursively
+```
+
+---
+
+#### `exists(pathExpression)`
+
+Check if a path exists.
+
+```typescript
+exists(pathExpression: string): boolean
+```
+
+---
+
+#### `typeOf(pathExpression)`
+
+Get the type of value at a path.
+
+```typescript
+typeOf(pathExpression: string): string | undefined
+```
+
+Returns: `'string' | 'number' | 'boolean' | 'null' | 'array' | 'object' | undefined`
+
+---
+
+### Modification Methods
+
+#### `set(path, value)`
+
+Set a value at a path (creates intermediate objects/arrays).
+
+```typescript
+set(path: string, value: any): TONLDocument
+```
+
+**Example:**
+```typescript
+doc
+  .set('user.name', 'Alice')
+  .set('user.age', 30)
+  .set('user.verified', true);
+```
+
+---
+
+#### `delete(path)`
+
+Delete a value at a path.
+
+```typescript
+delete(path: string): TONLDocument
+```
+
+---
+
+#### `push(path, ...items)`
+
+Push items to an array.
+
+```typescript
+push(path: string, ...items: any[]): number
+```
+
+Returns: New array length
+
+---
+
+#### `pop(path)`
+
+Remove and return the last item from an array.
+
+```typescript
+pop(path: string): any
+```
+
+---
+
+#### `merge(path, object)`
+
+Shallow merge an object at a path.
+
+```typescript
+merge(path: string, object: object): TONLDocument
+```
+
+---
+
+### Navigation Methods
+
+#### `entries()`
+
+Iterate over [key, value] pairs at root level.
+
+```typescript
+*entries(): Generator<[string, any]>
+```
+
+**Example:**
+```typescript
+for (const [key, value] of doc.entries()) {
+  console.log(`${key}: ${value}`);
+}
+```
+
+---
+
+#### `keys()` / `values()`
+
+Iterate over keys or values at root level.
+
+```typescript
+*keys(): Generator<string>
+*values(): Generator<any>
+```
+
+---
+
+#### `deepEntries()` / `deepKeys()` / `deepValues()`
+
+Recursively iterate over all [path, value] pairs, paths, or values.
+
+```typescript
+*deepEntries(): Generator<[string, any]>
+*deepKeys(): Generator<string>
+*deepValues(): Generator<any>
+```
+
+---
+
+#### `walk(callback, options?)`
+
+Walk the document tree with a callback.
+
+```typescript
+walk(callback: WalkCallback, options?: WalkOptions): void
+```
+
+**Example:**
+```typescript
+doc.walk((path, value, depth) => {
+  console.log(`[Depth ${depth}] ${path}: ${value}`);
+});
+```
+
+---
+
+#### `find(predicate)` / `findAll(predicate)`
+
+Find values matching a predicate.
+
+```typescript
+find(predicate: (value: any, path: string) => boolean): any
+findAll(predicate: (value: any, path: string) => boolean): any[]
+```
+
+---
+
+#### `some(predicate)` / `every(predicate)`
+
+Check if any/all values match a predicate.
+
+```typescript
+some(predicate: (value: any, path: string) => boolean): boolean
+every(predicate: (value: any, path: string) => boolean): boolean
+```
+
+---
+
+#### `countNodes()`
+
+Count total nodes in the document.
+
+```typescript
+countNodes(): number
+```
+
+---
+
+### Change Tracking Methods
+
+#### `snapshot()`
+
+Create an independent copy of the document.
+
+```typescript
+snapshot(): TONLDocument
+```
+
+---
+
+#### `diff(other)`
+
+Compare with another document and generate a diff.
+
+```typescript
+diff(other: TONLDocument): DiffResult
+```
+
+**Returns:**
+```typescript
+interface DiffResult {
+  changes: DiffEntry[];
+  summary: {
+    added: number;
+    modified: number;
+    deleted: number;
+    total: number;
+  };
+}
+```
+
+---
+
+#### `diffString(other)`
+
+Generate a human-readable diff string.
+
+```typescript
+diffString(other: TONLDocument): string
+```
+
+---
+
+### Indexing Methods
+
+#### `createIndex(options)`
+
+Create an index for fast lookups.
+
+```typescript
+createIndex(options: IndexOptions): void
+
+interface IndexOptions {
+  name: string;
+  fields: string | string[];
+  type?: 'hash' | 'btree' | 'compound';
+  unique?: boolean;
+}
+```
+
+**Example:**
+```typescript
+// Hash index (O(1) lookups)
+doc.createIndex({
+  name: 'userById',
+  fields: 'id',
+  type: 'hash',
+  unique: true
+});
+
+// BTree index (O(log n) range queries)
+doc.createIndex({
+  name: 'userByAge',
+  fields: 'age',
+  type: 'btree'
+});
+
+// Compound index (multiple fields)
+doc.createIndex({
+  name: 'userByNameAndAge',
+  fields: ['name', 'age'],
+  type: 'compound'
+});
+```
+
+---
+
+#### `getIndex(name)`
+
+Get an existing index.
+
+```typescript
+getIndex(name: string): IIndex | undefined
+```
+
+**Example:**
+```typescript
+const idx = doc.getIndex('userById');
+const paths = idx.find(123);  // O(1) lookup
+```
+
+---
+
+#### `listIndices()`
+
+List all index names.
+
+```typescript
+listIndices(): string[]
+```
+
+---
+
+#### `dropIndex(name)`
+
+Remove an index.
+
+```typescript
+dropIndex(name: string): void
+```
+
+---
+
+### Export Methods
+
+#### `toJSON()`
+
+Export to JavaScript object.
+
+```typescript
+toJSON(): any
+```
+
+---
+
+#### `toTONL(options?)`
+
+Export to TONL string.
+
+```typescript
+toTONL(options?: EncodeOptions): string
+```
+
+---
+
+#### `save(path, options?)`
+
+Save to file (async).
+
+```typescript
+async save(path: string, options?: EncodeOptions): Promise<void>
+```
+
+---
+
+#### `saveSync(path, options?)`
+
+Save to file (sync).
+
+```typescript
+saveSync(path: string, options?: EncodeOptions): void
+```
+
+---
+
+### Metadata Methods
+
+#### `stats()`
+
+Get document statistics.
+
+```typescript
+stats(): DocumentStats
+
+interface DocumentStats {
+  sizeBytes: number;
+  nodeCount: number;
+  maxDepth: number;
+  arrayCount: number;
+  objectCount: number;
+  primitiveCount: number;
+}
+```
+
+---
+
 ## Core Functions
+
+Lower-level encode/decode functions for direct use.
 
 ### `encodeTONL(input, options?)`
 
 Encodes JavaScript/TypeScript data to TONL format string.
 
-#### Parameters
-
-- **`input: any`** - The data to encode (object, array, primitive, etc.)
-- **`options?: EncodeOptions`** - Optional encoding configuration
-
-#### Returns
-
-- **`string`** - The TONL formatted string
-
-#### Options
-
 ```typescript
+function encodeTONL(input: any, options?: EncodeOptions): string
+
 interface EncodeOptions {
   delimiter?: "," | "|" | "\t" | ";";    // Field delimiter (default: ",")
-  includeTypes?: boolean;                // Add type hints to headers (default: false)
+  includeTypes?: boolean;                // Add type hints (default: false)
   version?: string;                      // TONL version (default: "1.0")
-  indent?: number;                       // Spaces per indentation level (default: 2)
-  singleLinePrimitiveLists?: boolean;    // Use single line for primitive arrays (default: true)
+  indent?: number;                       // Spaces per level (default: 2)
+  singleLinePrimitiveLists?: boolean;    // Single line for primitives (default: true)
 }
 ```
 
-#### Examples
-
+**Example:**
 ```typescript
 import { encodeTONL } from 'tonl';
 
@@ -41,22 +531,11 @@ const data = {
   ]
 };
 
-// Basic encoding
-const tonl1 = encodeTONL(data);
-
-// With custom delimiter and type hints
-const tonl2 = encodeTONL(data, {
+const tonl = encodeTONL(data, {
   delimiter: "|",
   includeTypes: true,
   indent: 4
 });
-
-// Result:
-// #version 1.0
-// #delimiter "|"
-// users[2]{id:u32,name:str,active:bool}:
-// 1|Alice|true
-// 2|Bob|false
 ```
 
 ---
@@ -65,24 +544,16 @@ const tonl2 = encodeTONL(data, {
 
 Decodes TONL format string back to JavaScript objects.
 
-#### Parameters
-
-- **`text: string`** - The TONL formatted string to decode
-- **`options?: DecodeOptions`** - Optional decoding configuration
-
-#### Returns
-
-- **`any`** - The decoded JavaScript data
-
-#### Options
-
 ```typescript
+function decodeTONL(text: string, options?: DecodeOptions): any
+
 interface DecodeOptions {
-  delimiter?: "," | "|" | "\t" | ";";    // Field delimiter (auto-detected if not specified)
+  delimiter?: "," | "|" | "\t" | ";";    // Field delimiter (auto-detected)
   strict?: boolean;                      // Strict mode validation (default: false)
 }
-``#### Examples
+```
 
+**Example:**
 ```typescript
 import { decodeTONL } from 'tonl';
 
@@ -91,19 +562,8 @@ users[2]{id:u32,name:str,active:bool}:
   1, Alice, true
   2, Bob, false`;
 
-// Basic decoding
-const data1 = decodeTONL(tonlText);
-
-// With strict mode
-const data2 = decodeTONL(tonlText, { strict: true });
-
-// Result:
-// {
-//   users: [
-//     { id: 1, name: "Alice", active: true },
-//     { id: 2, name: "Bob", active: false }
-//   ]
-// }
+const data = decodeTONL(tonlText);
+// { users: [{ id: 1, name: "Alice", active: true }, ...] }
 ```
 
 ---
@@ -112,24 +572,16 @@ const data2 = decodeTONL(tonlText, { strict: true });
 
 Automatically chooses optimal encoding settings based on data analysis.
 
-#### Parameters
+```typescript
+function encodeSmart(input: any, options?: EncodeOptions): string
+```
 
-- **`input: any`** - The data to encode
-- **`options?: EncodeOptions`** - Optional base configuration (smart options may override)
+**Smart Optimization:**
+1. Delimiter selection to minimize quoting
+2. Layout optimization for compactness
+3. Type hint optimization
 
-#### Returns
-
-- **`string`** - The optimized TONL formatted string
-
-#### Smart Optimization Logic
-
-1. **Delimiter Selection**: Analyzes data to choose delimiter that minimizes quoting
-2. **Type Hint Decision**: Adds type hints only when beneficial for validation
-3. **Layout Optimization**: Chooses between tabular and nested formats
-4. **Compression**: Applies whitespace optimization where appropriate
-
-#### Examples
-
+**Example:**
 ```typescript
 import { encodeSmart } from 'tonl';
 
@@ -142,14 +594,9 @@ const data = {
 
 // Smart encoding will use "|" delimiter to avoid quoting commas
 const optimized = encodeSmart(data);
-
-// Result:
-// #version 1.0
-// #delimiter "|"
-// items[2]{name:str,category:str}:
-// Item A|Tools, Hardware
-// Item B|Electronics
 ```
+
+---
 
 ## Utility Functions
 
@@ -157,46 +604,24 @@ const optimized = encodeSmart(data);
 
 Parses a single TONL line into array of field values.
 
-#### Parameters
-
-- **`line: string`** - The TONL line to parse
-- **`delimiter: string`** - The field delimiter
-
-#### Returns
-
-- **`string[]`** - Array of parsed field values
-
-#### Examples
-
 ```typescript
-import { parseTONLLine } from 'tonl';
-
-const line1 = '1, Alice, admin';
-const fields1 = parseTONLLine(line1, ',');
-// Result: ['1', 'Alice', 'admin']
-
-const line2 = '2, "Bob, Jr.", "super, admin"';
-const fields2 = parseTONLLine(line2, ',');
-// Result: ['2', 'Bob, Jr.', 'super, admin']
+function parseTONLLine(line: string, delimiter: TONLDelimiter): string[]
 ```
+
+---
 
 ### `inferPrimitiveType(value)`
 
 Infers the primitive type of a value for type hint generation.
 
-#### Parameters
-
-- **`value: unknown`** - The value to analyze
-
-#### Returns
-
-- **`"u32" | "i32" | "f64" | "bool" | "null" | "str" | "obj" | "list"`** - The inferred type
-
-#### Examples
-
 ```typescript
-import { inferPrimitiveType } from 'tonl';
+function inferPrimitiveType(value: unknown): TONLTypeHint
 
+type TONLTypeHint = "u32" | "i32" | "f64" | "bool" | "null" | "str" | "obj" | "list"
+```
+
+**Examples:**
+```typescript
 inferPrimitiveType(42);        // "u32"
 inferPrimitiveType(-10);       // "i32"
 inferPrimitiveType(3.14);      // "f64"
@@ -207,316 +632,123 @@ inferPrimitiveType([1,2,3]);   // "list"
 inferPrimitiveType({a: 1});    // "obj"
 ```
 
-## Data Types
+---
 
-### Primitive Types
+### `isUniformObjectArray(arr)`
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `str` | String values | `"hello world"` |
-| `u32` | Unsigned 32-bit integer | `42` |
-| `i32` | Signed 32-bit integer | `-10` |
-| `f64` | 64-bit floating point | `3.14` |
-| `bool` | Boolean values | `true` / `false` |
-| `null` | Null value | `null` |
-
-### Complex Types
-
-| Type | Description | TONL Format |
-|------|-------------|-------------|
-| `obj` | Object/dictionary | Nested block with `{}` header |
-| `list` | Array/list | Tabular format or inline list |
-
-## Error Handling
-
-### Common Exceptions
-
-1. **Parse Error**: Invalid TONL syntax
-   ```typescript
-   try {
-     decodeTONL('invalid syntax');
-   } catch (error) {
-     console.error('Parse error:', error.message);
-   }
-   ```
-
-2. **Strict Mode Violation**: Data doesn't match header specification
-   ```typescript
-   try {
-     decodeTONL('users[2]:\n  1, Alice\n  2, Bob, extra', { strict: true });
-   } catch (error) {
-     console.error('Strict mode error:', error.message);
-   }
-   ```
-
-3. **Type Coercion Error**: Invalid type conversion
-   ```typescript
-   // Will throw if type hints are present and values can't be coerced
-   decodeTONL('value[u32]: "not-a-number"');
-   ```
-
-## Advanced Usage
-
-### Custom Type Hints
+Check if an array contains uniform objects.
 
 ```typescript
-const data = { user: { id: 1, name: "Alice" } };
-
-const tonl = encodeTONL(data, {
-  includeTypes: true
-});
-
-// Result includes type hints:
-// user{id:u32,name:str}:
-//   id: 1
-//   name: Alice
-```
-
-### Multiline Strings
-
-```typescript
-const data = {
-  description: "Line 1\nLine 2\nLine 3"
-};
-
-const tonl = encodeTONL(data);
-
-// Result:
-// root{description:str}:
-//   description: """Line 1
-// Line 2
-// Line 3"""
-```
-
-### Special Character Handling
-
-```typescript
-const data = {
-  path: "C:\\Users\\Name\\Documents",
-  quote: 'He said: "Hello, world!"',
-  delimiter: "Value, with, commas"
-};
-
-const tonl = encodeTONL(data);
-
-// Result with proper escaping:
-// root{path,str,quote,delimiter}:
-//   path: "C:\\Users\\Name\\Documents"
-//   quote: "He said: ""Hello, world!"""
-//   delimiter: "Value, with, commas"
-```
-
-## Performance Considerations
-
-### Encoding Performance
-- Linear time complexity O(n) where n is the size of input data
-- Memory efficient: uses array joins instead of string concatenation
-- Type inference is cached for repeated patterns
-
-### Decoding Performance
-- Single-pass parsing with minimal backtracking
-- Efficient state machine for quote/delimiter handling
-- Lazy evaluation of type coercion
-
-### Optimization Tips
-1. Use `encodeSmart()` for automatic optimization
-2. Choose appropriate delimiter based on data characteristics
-3. Enable strict mode only when validation is needed
-4. Consider omitting type hints for maximum compactness
-
-## TypeScript Integration
-
-### Type Safety
-
-```typescript
-interface User {
-  id: number;
-  name: string;
-  role: string;
-}
-
-const data = {
-  users: [] as User[]
-};
-
-// Encode with type safety
-const tonl = encodeTONL(data);
-
-// Decode with type assertion
-const decoded = decodeTONL(tonl) as { users: User[] };
-```
-
-### Generic Helper Functions
-
-```typescript
-function encodeTyped<T>(data: T, options?: EncodeOptions): string {
-  return encodeTONL(data, options);
-}
-
-function decodeTyped<T>(text: string, options?: DecodeOptions): T {
-  return decodeTONL(text, options) as T;
-}
-
-// Usage
-const users = encodeTyped<User[]>(userData);
-const restored = decodeTyped<User[]>(tonlText);
-```
-
-## Browser Compatibility
-
-TONL works in modern browsers and Node.js environments:
-
-```typescript
-// Browser usage
-import { encodeTONL, decodeTONL } from 'tonl';
-
-// Node.js usage
-const { encodeTONL, decodeTONL } = require('tonl');
-```
-
-### ES Module Support
-
-```html
-<script type="module">
-  import { encodeTONL, decodeTONL } from 'https://cdn.skypack.dev/tonl';
-
-  const data = { hello: 'world' };
-  const tonl = encodeTONL(data);
-</script>
-```
-## Streaming API (v0.5.0+)
-
-For handling large datasets efficiently, TONL provides streaming APIs.
-
-### `createEncodeStream(options?)`
-
-Creates a transform stream for encoding NDJSON to TONL.
-
-#### Parameters
-
-- **`options?: EncodeOptions`** - Same options as `encodeTONL`
-
-#### Returns
-
-- **`Transform`** - Node.js Transform stream
-
-#### Example
-
-```typescript
-import { createEncodeStream } from 'tonl/stream';
-import { createReadStream, createWriteStream } from 'fs';
-
-// Stream large files
-createReadStream('huge.json')
-  .pipe(createEncodeStream({ smart: true }))
-  .pipe(createWriteStream('huge.tonl'));
+function isUniformObjectArray(arr: any[]): boolean
 ```
 
 ---
 
-### `createDecodeStream(options?)`
+### `getUniformColumns(arr)`
 
-Creates a transform stream for decoding TONL to JSON objects.
-
-#### Parameters
-
-- **`options?: DecodeOptions`** - Same options as `decodeTONL`
-
-#### Returns
-
-- **`Transform`** - Node.js Transform stream
-
-#### Example
+Get stable column order for uniform object array.
 
 ```typescript
-import { createDecodeStream } from 'tonl/stream';
-import { createReadStream } from 'fs';
-
-createReadStream('data.tonl')
-  .pipe(createDecodeStream())
-  .on('data', (obj) => console.log(obj));
+function getUniformColumns(arr: any[]): string[]
 ```
 
 ---
 
-### `encodeIterator(iterable, options?)`
+## Streaming API (v0.7.5+)
 
-Async generator for encoding data streams.
+For handling large datasets efficiently.
 
-#### Parameters
+### `streamQuery(filePath, pathExpression, options?)`
 
-- **`iterable: AsyncIterable<any>`** - Async iterable data source
-- **`options?: EncodeOptions`** - Encoding options
-
-#### Returns
-
-- **`AsyncGenerator<string>`** - Async generator yielding TONL lines
-
-#### Example
+Stream query results from a file.
 
 ```typescript
-import { encodeIterator } from 'tonl/stream';
+async function* streamQuery(
+  filePath: string,
+  pathExpression: string,
+  options?: StreamQueryOptions
+): AsyncGenerator<any>
 
-async function* dataSource() {
-  yield { id: 1, name: 'Alice' };
-  yield { id: 2, name: 'Bob' };
+interface StreamQueryOptions {
+  filter?: (value: any) => boolean;
+  limit?: number;
+  skip?: number;
+  highWaterMark?: number;
 }
+```
 
-for await (const tonlLine of encodeIterator(dataSource())) {
-  console.log(tonlLine);
+**Example:**
+```typescript
+import { streamQuery } from 'tonl';
+
+// Process 10GB file with constant memory
+for await (const record of streamQuery('huge-data.tonl', 'records[*]', {
+  filter: r => r.active,
+  limit: 1000
+})) {
+  process(record);
 }
 ```
 
 ---
 
-### `decodeIterator(iterable, options?)`
+### `streamAggregate(filePath, pathExpression, reducer, initialValue)`
 
-Async generator for decoding TONL streams.
-
-#### Parameters
-
-- **`iterable: AsyncIterable<string>`** - Async iterable TONL lines
-- **`options?: DecodeOptions`** - Decoding options
-
-#### Returns
-
-- **`AsyncGenerator<any>`** - Async generator yielding decoded objects
-
-#### Example
+Aggregate data from a stream.
 
 ```typescript
-import { decodeIterator } from 'tonl/stream';
+async function streamAggregate<T, R>(
+  filePath: string,
+  pathExpression: string,
+  reducer: (accumulator: R, value: T) => R,
+  initialValue: R
+): Promise<R>
+```
 
-async function* tonlSource() {
-  yield '#version 1.0\n';
-  yield 'users[2]{id:u32,name:str}:\n';
-  yield '1,Alice\n';
-  yield '2,Bob\n';
-}
+**Example:**
+```typescript
+const total = await streamAggregate(
+  'sales.tonl',
+  'sales[*].amount',
+  (sum, amount) => sum + amount,
+  0
+);
+```
 
-for await (const obj of decodeIterator(tonlSource())) {
-  console.log(obj);
+---
+
+### `StreamPipeline`
+
+Chainable stream transformations.
+
+```typescript
+import { StreamPipeline } from 'tonl';
+
+const pipeline = new StreamPipeline('data.tonl')
+  .filter(item => item.active)
+  .map(item => ({ ...item, processed: true }))
+  .limit(100);
+
+for await (const item of pipeline) {
+  console.log(item);
 }
 ```
 
-## Schema API (v0.4.0+)
+---
+
+## Schema API (v0.8.0+)
 
 For data validation and type generation.
 
 ### `parseSchema(schemaText)`
 
-Parses TONL schema language (TSL) into schema object.
+Parse TONL Schema Language (TSL) into schema object.
 
-#### Parameters
+```typescript
+function parseSchema(schemaText: string): TONLSchema
+```
 
-- **`schemaText: string`** - Schema definition in TSL format
-
-#### Returns
-
-- **`TONLSchema`** - Parsed schema object
-
-#### Example
-
+**Example:**
 ```typescript
 import { parseSchema } from 'tonl/schema';
 
@@ -535,20 +767,22 @@ const schema = parseSchema(schemaText);
 
 ### `validateTONL(data, schema, options?)`
 
-Validates data against a schema.
+Validate data against a schema.
 
-#### Parameters
+```typescript
+function validateTONL(
+  data: any,
+  schema: TONLSchema,
+  options?: { strict?: boolean }
+): ValidationResult
 
-- **`data: any`** - Data to validate
-- **`schema: TONLSchema`** - Schema object
-- **`options?: { strict?: boolean }`** - Validation options
+interface ValidationResult {
+  valid: boolean;
+  errors: ValidationError[];
+}
+```
 
-#### Returns
-
-- **`ValidationResult`** - Validation result with errors
-
-#### Example
-
+**Example:**
 ```typescript
 import { parseSchema, validateTONL } from 'tonl/schema';
 
@@ -565,38 +799,295 @@ if (!result.valid) {
 
 ### `generateTypeScript(schema, options?)`
 
-Generates TypeScript type definitions from schema.
-
-#### Parameters
-
-- **`schema: TONLSchema`** - Schema object
-- **`options?: { exportAll?: boolean }`** - Generation options
-
-#### Returns
-
-- **`string`** - TypeScript type definitions
-
-#### Example
+Generate TypeScript type definitions from schema.
 
 ```typescript
-import { parseSchema, generateTypeScript } from 'tonl/schema';
+function generateTypeScript(
+  schema: TONLSchema,
+  options?: GenerateOptions
+): string
 
-const schema = parseSchema(schemaText);
-const tsCode = generateTypeScript(schema);
-
-// Output TypeScript interfaces
-console.log(tsCode);
+interface GenerateOptions {
+  exportAll?: boolean;
+  readonly?: boolean;
+  strict?: boolean;
+}
 ```
+
+---
+
+## Query API (v0.6.0+)
+
+See [QUERY_API.md](./QUERY_API.md) for detailed query syntax and examples.
+
+**Path Syntax:**
+- Property access: `user.name`
+- Array indexing: `users[0]`, `users[-1]`
+- Wildcards: `users[*].name`, `data.*`
+- Recursive descent: `$..email`
+- Array slicing: `users[0:5]`, `users[::2]`
+- Filters: `users[?(@.age > 18)]`
+
+**Operators:**
+- Comparison: `==`, `!=`, `>`, `<`, `>=`, `<=`
+- Logical: `&&`, `||`, `!`
+- String: `contains`, `startsWith`, `endsWith`, `matches`
+
+---
+
+## Modification API (v0.6.5+)
+
+See [MODIFICATION_API.md](./MODIFICATION_API.md) for detailed modification examples.
+
+**Operations:**
+- `set(path, value)` - Create/update values
+- `delete(path)` - Remove values
+- `push(path, ...items)` - Add to arrays
+- `pop(path)` - Remove from arrays
+- `merge(path, object)` - Merge objects
+
+**Change Tracking:**
+- `snapshot()` - Create backups
+- `diff(other)` - Generate diffs
+- `diffString(other)` - Human-readable diffs
+
+---
+
+## Navigation API (v0.6.0+)
+
+See [NAVIGATION_API.md](./NAVIGATION_API.md) for detailed navigation examples.
+
+**Iterators:**
+- `entries()`, `keys()`, `values()` - Root level
+- `deepEntries()`, `deepKeys()`, `deepValues()` - Recursive
+- `walk(callback, options?)` - Tree walking
+
+**Search:**
+- `find(predicate)` - First match
+- `findAll(predicate)` - All matches
+- `some(predicate)`, `every(predicate)` - Predicates
+
+---
+
+## Indexing API (v0.7.0+)
+
+**Index Types:**
+- **Hash Index**: O(1) exact matches
+- **BTree Index**: O(log n) range queries
+- **Compound Index**: Multi-field indexing
+
+**Operations:**
+- `createIndex(options)` - Create index
+- `getIndex(name)` - Retrieve index
+- `listIndices()` - List all indices
+- `dropIndex(name)` - Remove index
+
+---
+
+## File Operations
+
+### FileEditor
+
+Atomic file editing with automatic backups.
+
+```typescript
+import { FileEditor } from 'tonl';
+
+// Open file (creates backup)
+const editor = await FileEditor.open('config.tonl', {
+  backup: true,
+  backupSuffix: '.bak'
+});
+
+// Modify data
+editor.data.app.version = '2.0.0';
+
+// Check if modified
+if (editor.isModified()) {
+  // Save atomically (temp file + rename)
+  await editor.save();
+}
+
+// Restore from backup if needed
+await editor.restoreBackup();
+```
+
+---
+
+## Error Handling
+
+### Error Classes
+
+**TONLError** - Base error class
+```typescript
+class TONLError extends Error {
+  line?: number;
+  column?: number;
+  source?: string;
+}
+```
+
+**TONLParseError** - Syntax errors
+```typescript
+class TONLParseError extends TONLError {
+  suggestion?: string;
+}
+```
+
+**TONLValidationError** - Schema validation errors
+```typescript
+class TONLValidationError extends TONLError {
+  field: string;
+  expected?: string;
+  actual?: string;
+}
+```
+
+**TONLTypeError** - Type mismatch errors
+```typescript
+class TONLTypeError extends TONLError {
+  expected: string;
+  actual: string;
+}
+```
+
+### Example
+
+```typescript
+try {
+  const doc = TONLDocument.parse('invalid syntax');
+} catch (error) {
+  if (error instanceof TONLParseError) {
+    console.error(`Parse error at line ${error.line}: ${error.message}`);
+    if (error.suggestion) {
+      console.log(`Suggestion: ${error.suggestion}`);
+    }
+  }
+}
+```
+
+---
+
+## Performance Considerations
+
+### Encoding Performance
+- Linear time O(n) where n = data size
+- Memory efficient with array joins
+- Type inference is cached
+
+### Decoding Performance
+- Single-pass parsing
+- Efficient state machine
+- Lazy type coercion
+
+### Query Performance
+- Simple path access: <0.1ms
+- Wildcard queries (1000 nodes): <20ms
+- Filter queries (1000 nodes): <50ms
+- With indices: O(1) for hash, O(log n) for btree
+
+### Optimization Tips
+1. Use `encodeSmart()` for automatic optimization
+2. Create indices for repeated lookups
+3. Use streaming for large files (>100MB)
+4. Enable strict mode only when needed
+5. Batch modifications before saving
+
+---
+
+## TypeScript Integration
+
+### Type Safety
+
+```typescript
+interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
+const doc = TONLDocument.fromJSON({
+  users: [] as User[]
+});
+
+// Type-safe queries (with assertion)
+const users = doc.query('users[*]') as User[];
+```
+
+### Generic Helpers
+
+```typescript
+function loadTyped<T>(filePath: string): T {
+  const doc = TONLDocument.fromFileSync(filePath);
+  return doc.toJSON() as T;
+}
+
+// Usage
+interface Config {
+  database: {
+    host: string;
+    port: number;
+  };
+}
+
+const config = loadTyped<Config>('config.tonl');
+```
+
+---
+
+## Browser Compatibility
+
+TONL works in all modern browsers and Node.js environments.
+
+### ES Module
+
+```html
+<script type="module">
+  import { TONLDocument, encodeTONL, decodeTONL } from 'https://cdn.skypack.dev/tonl';
+
+  const doc = TONLDocument.fromJSON({ hello: 'world' });
+  const tonl = doc.toTONL();
+</script>
+```
+
+### CommonJS (Node.js)
+
+```javascript
+const { TONLDocument, encodeTONL, decodeTONL } = require('tonl');
+```
+
+### Bundle Size
+
+- **Core**: 8.84 KB gzipped
+- **Full**: ~25 KB gzipped (with all features)
+- **Tree-shakeable**: Import only what you need
 
 ---
 
 ## Version
 
-Current version: **0.5.0**
+**Current version: 1.0.0**
 
-- Full streaming API support
-- Browser compatibility
-- Schema validation system
-- TypeScript strict mode
-- Robust null handling
-- Comment and directive support
+- ✅ Production ready and stable
+- ✅ Full feature set (query, modify, index, stream, schema)
+- ✅ 100% test coverage
+- ✅ Zero runtime dependencies
+- ✅ TypeScript-first with full type safety
+- ✅ Browser and Node.js support
+
+---
+
+## See Also
+
+- [Getting Started Guide](./GETTING_STARTED.md)
+- [CLI Documentation](./CLI.md)
+- [Query API Reference](./QUERY_API.md)
+- [Modification API Guide](./MODIFICATION_API.md)
+- [Navigation API Reference](./NAVIGATION_API.md)
+- [Format Specification](./SPECIFICATION.md)
+- [Schema Specification](./SCHEMA_SPECIFICATION.md)
+- [Use Cases](./USE_CASES.md)
+
+---
+
+**Happy coding with TONL! 🚀**
