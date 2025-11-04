@@ -62,3 +62,6 @@ export function encodeSmart(input: any, opts?: {
 }
 
 export const encodeTONL = _encodeTONL;
+
+// Export TONLDocument class (NEW in v0.6.0!)
+export { TONLDocument, type DocumentStats } from './document.js';
