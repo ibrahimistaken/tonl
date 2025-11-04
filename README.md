@@ -1,6 +1,6 @@
 <div align="center">
 
-![TONL - Token-Optimized Notation Language](header.png)
+![TONL - Token-Optimized Notation Language](readme.png)
 
 </div>
 
