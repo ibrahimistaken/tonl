@@ -15,9 +15,14 @@ TONL is a compact data serialization format designed for LLM efficiency:
 
 2. ARRAYS OF OBJECTS (tabular):
    - Format: arrayName[count]{field1,field2,...}:
+   - With types: arrayName[count]{field1:type1,field2:type2,...}:
    - Data rows follow with values in order
-   - Example:
+   - Example without types:
      users[2]{id,name,age}:
+       1, Alice, 30
+       2, Bob, 25
+   - Example with types:
+     users[2]{id:u32,name:str,age:u32}:
        1, Alice, 30
        2, Bob, 25
 
@@ -37,7 +42,13 @@ TONL is a compact data serialization format designed for LLM efficiency:
    - Format: arrayName[count]: value1, value2, value3
    - Example: tags[3]: javascript, python, rust
 
-6. VALUE TYPES:
+6. TYPE HINTS (optional):
+   - May appear after field names: fieldName:type
+   - Common types: str, u32, i32, f64, bool, obj, list
+   - Type hints enable validation but add ~5-10% tokens
+   - Types can be safely ignored - just parse the values
+
+7. VALUE TYPES:
    - Strings: quoted if contain special chars
    - Numbers: unquoted integers or floats
    - Booleans: true/false
@@ -46,15 +57,16 @@ TONL is a compact data serialization format designed for LLM efficiency:
 When you see TONL data:
 1. Look for headers to understand delimiters
 2. Identify structure by looking for [count]{fields}: pattern
-3. Parse tabular data as arrays of objects
-4. Parse indented single-line fields as object properties
-5. Respect nesting through indentation
-6. Convert back to JSON mentally if needed for processing
+3. Type hints (field:type) are optional - ignore the :type part, use the values
+4. Parse tabular data as arrays of objects
+5. Parse indented single-line fields as object properties
+6. Respect nesting through indentation
+7. Convert back to JSON mentally if needed for processing
 ```
 
 ## Quick Reference for Common Patterns
 
-### Pattern 1: User List
+### Pattern 1: User List (without types - compact)
 ```tonl
 users[3]{id,name,email,active}:
   1, Alice, alice@example.com, true
@@ -62,6 +74,15 @@ users[3]{id,name,email,active}:
   3, Carol, carol@example.com, true
 ```
 → Array of 3 objects with 4 fields each
+
+### Pattern 1b: User List (with types - validation)
+```tonl
+users[3]{id:u32,name:str,email:str,active:bool}:
+  1, Alice, alice@example.com, true
+  2, Bob, bob@example.com, false
+  3, Carol, carol@example.com, true
+```
+→ Same data, but with type hints for validation. Parse the same way - ignore :type suffixes.
 
 ### Pattern 2: Nested Configuration
 ```tonl

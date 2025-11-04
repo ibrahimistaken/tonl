@@ -637,14 +637,22 @@
 • Lines with {fields}: are object headers, field: value pairs follow
 • Indentation (2 spaces) indicates nesting levels
 • Default delimiter is comma unless #delimiter header specifies otherwise
-• Types: unquoted numbers/booleans, quoted strings, null
+• Type hints may appear: field:type (e.g., id:u32, name:str, active:bool)
+  → Ignore the :type part, just parse the values
+• Value types: unquoted numbers/booleans, quoted strings, null
 
-Example:
+Examples:
+Without types (compact):
 users[2]{id,name,role}:
   1, Alice, admin
   2, Bob, user
 
-This represents: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"name":"Bob","role":"user"}]}</code></pre>
+With types (validation):
+users[2]{id:u32,name:str,role:str}:
+  1, Alice, admin
+  2, Bob, user
+
+Both represent: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"name":"Bob","role":"user"}]}</code></pre>
                     </div>
                     <div class="bg-emerald-50 px-6 py-4 border-t border-emerald-200">
                         <p class="text-sm text-slate-700 leading-relaxed">
@@ -1446,7 +1454,29 @@ tonl decode filtered.tonl --out result.json</code></pre>
 
         // Copy LLM prompt
         function copyLLMPrompt() {
-            const promptText = document.getElementById('llm-prompt-code').textContent;
+            const promptText = `The following data is in TONL format. Parse it as follows:
+
+• Lines with [count]{fields}: are array headers, data rows follow
+• Lines with {fields}: are object headers, field: value pairs follow
+• Indentation (2 spaces) indicates nesting levels
+• Default delimiter is comma unless #delimiter header specifies otherwise
+• Type hints may appear: field:type (e.g., id:u32, name:str, active:bool)
+  → Ignore the :type part, just parse the values
+• Value types: unquoted numbers/booleans, quoted strings, null
+
+Examples:
+Without types (compact):
+users[2]{id,name,role}:
+  1, Alice, admin
+  2, Bob, user
+
+With types (validation):
+users[2]{id:u32,name:str,role:str}:
+  1, Alice, admin
+  2, Bob, user
+
+Both represent: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"name":"Bob","role":"user"}]}`;
+
             navigator.clipboard.writeText(promptText);
             event.target.textContent = '✓ Copied!';
             setTimeout(() => {

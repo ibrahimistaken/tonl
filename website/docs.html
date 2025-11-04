@@ -310,16 +310,18 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
 • Lines with {fields}: are object headers, field: value pairs follow
 • Indentation (2 spaces) indicates nesting levels
 • Default delimiter is comma unless #delimiter header specifies otherwise
-• Types: unquoted numbers/booleans, quoted strings, null
+• Type hints may appear: field:type (e.g., id:u32, name:str)
+  → Ignore the :type part, just parse the values
+• Value types: unquoted numbers/booleans, quoted strings, null
 
-Example:
-users[2]{id,name,role}:
-  1, Alice, admin
-  2, Bob, user
+Examples:
+Without types: users[2]{id,name,role}:
+With types: users[2]{id:u32,name:str,role:str}:
+Both parse the same - just read the data values.
 
 This represents: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"name":"Bob","role":"user"}]}</code></pre>
                         </div>
-                        <button class="copy-code-btn" onclick="copyCode(this, `The following data is in TONL format. Parse it as follows:\n\n• Lines with [count]{fields}: are array headers, data rows follow\n• Lines with {fields}: are object headers, field: value pairs follow\n• Indentation (2 spaces) indicates nesting levels\n• Default delimiter is comma unless #delimiter header specifies otherwise\n• Types: unquoted numbers/booleans, quoted strings, null\n\nExample:\nusers[2]{id,name,role}:\n  1, Alice, admin\n  2, Bob, user\n\nThis represents: {\"users\": [{\"id\":1,\"name\":\"Alice\",\"role\":\"admin\"}, {\"id\":2,\"name\":\"Bob\",\"role\":\"user\"}]}`)">Copy</button>
+                        <button class="copy-code-btn" onclick="copyCode(this, `The following data is in TONL format. Parse it as follows:\n\n• Lines with [count]{fields}: are array headers, data rows follow\n• Lines with {fields}: are object headers, field: value pairs follow\n• Indentation (2 spaces) indicates nesting levels\n• Default delimiter is comma unless #delimiter header specifies otherwise\n• Type hints may appear: field:type (e.g., id:u32, name:str)\n  → Ignore the :type part, just parse the values\n• Value types: unquoted numbers/booleans, quoted strings, null\n\nExamples:\nWithout types: users[2]{id,name,role}:\nWith types: users[2]{id:u32,name:str,role:str}:\nBoth parse the same - just read the data values.\n\nThis represents: {\"users\": [{\"id\":1,\"name\":\"Alice\",\"role\":\"admin\"}, {\"id\":2,\"name\":\"Bob\",\"role\":\"user\"}]}`)">Copy</button>
                     </div>
 
                     <div class="bg-white border border-slate-200 rounded-lg p-6">
