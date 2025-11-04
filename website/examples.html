@@ -1,92 +1,81 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Examples & Playground - TONL</title>
-    <meta name="description" content="Try TONL live! Convert JSON to TONL, experiment with queries, and see real-world examples.">
-
+    <title>Playground - TONL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tonl@1.0.1/dist/browser/tonl.iife.js"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Inter', sans-serif; }
         code, pre, textarea { font-family: 'JetBrains Mono', monospace; }
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-white">
 
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="index.html" class="flex items-center space-x-2">
-                        <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center text-white font-bold text-xl">T</div>
-                        <span class="text-2xl font-bold gradient-text">TONL</span>
-                    </a>
-                </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html#features" class="text-gray-700 hover:text-purple-600 font-medium transition">Features</a>
-                    <a href="docs.html" class="text-gray-700 hover:text-purple-600 font-medium transition">Docs</a>
-                    <a href="examples.html" class="text-purple-600 font-semibold">Examples</a>
-                    <a href="https://github.com/ersinkoc/tonl" target="_blank" class="text-gray-700 hover:text-purple-600 font-medium transition">GitHub</a>
+    <nav class="border-b border-slate-200 bg-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl font-bold text-white">T</span>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">TONL</span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="index.html#features" class="text-slate-600 hover:text-slate-900 font-medium">Features</a>
+                    <a href="docs.html" class="text-slate-600 hover:text-slate-900 font-medium">Docs</a>
+                    <a href="examples.html" class="text-slate-900 font-semibold">Playground</a>
+                    <a href="https://github.com/ersinkoc/tonl" target="_blank" class="text-slate-600 hover:text-slate-900 font-medium">GitHub</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" x-data="playground()">
+    <div class="max-w-7xl mx-auto px-6 py-12" x-data="playground()">
 
-        <!-- Page Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Live Playground</h1>
-            <p class="text-xl text-gray-600">Try TONL in your browser - convert JSON to TONL and back</p>
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 mb-4">Live Playground</h1>
+            <p class="text-xl text-slate-600">Try TONL in your browser</p>
         </div>
 
         <!-- Quick Examples -->
         <div class="mb-8">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Examples:</h3>
+            <div class="text-sm font-semibold text-slate-700 mb-3">Quick Examples:</div>
             <div class="flex flex-wrap gap-2">
-                <button @click="loadExample('simple')" class="px-4 py-2 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-400 hover:text-purple-600 transition font-medium">
+                <button @click="loadExample('simple')" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium hover:border-slate-400 hover:bg-slate-50 transition">
                     Simple Object
                 </button>
-                <button @click="loadExample('users')" class="px-4 py-2 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-400 hover:text-purple-600 transition font-medium">
+                <button @click="loadExample('users')" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium hover:border-slate-400 hover:bg-slate-50 transition">
                     User Array
                 </button>
-                <button @click="loadExample('nested')" class="px-4 py-2 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-400 hover:text-purple-600 transition font-medium">
+                <button @click="loadExample('nested')" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium hover:border-slate-400 hover:bg-slate-50 transition">
                     Nested Data
                 </button>
-                <button @click="loadExample('ecommerce')" class="px-4 py-2 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-400 hover:text-purple-600 transition font-medium">
-                    E-commerce
-                </button>
-                <button @click="loadExample('config')" class="px-4 py-2 bg-white border-2 border-gray-200 rounded-lg hover:border-purple-400 hover:text-purple-600 transition font-medium">
+                <button @click="loadExample('config')" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium hover:border-slate-400 hover:bg-slate-50 transition">
                     Configuration
                 </button>
             </div>
         </div>
 
-        <!-- Main Playground -->
+        <!-- Playground -->
         <div class="grid md:grid-cols-2 gap-6">
 
             <!-- JSON Input -->
             <div>
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-xl font-bold text-gray-800">JSON Input</h3>
+                    <h3 class="font-semibold text-slate-900">JSON Input</h3>
                     <div class="flex gap-2">
-                        <button @click="formatJSON()" class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded font-medium transition">
+                        <button @click="formatJSON()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-md hover:bg-slate-50 transition">
                             Format
                         </button>
-                        <button @click="jsonToTONL()" class="px-4 py-1 text-sm gradient-bg text-white rounded font-semibold hover:opacity-90 transition">
+                        <button @click="jsonToTONL()" class="px-4 py-1.5 text-sm bg-slate-900 text-white rounded-md hover:bg-slate-800 transition">
                             Convert →
                         </button>
                     </div>
@@ -95,134 +84,86 @@
                 <textarea
                     x-model="jsonInput"
                     @input="updateStats()"
-                    class="w-full h-96 bg-gray-900 text-gray-300 rounded-lg p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="Enter your JSON here..."
+                    class="w-full h-96 bg-slate-900 text-slate-300 rounded-lg p-4 text-sm border border-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400 resize-none"
+                    placeholder="Enter JSON here..."
                 ></textarea>
 
-                <div class="mt-3 flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Bytes: <span class="font-semibold" x-text="jsonBytes"></span></span>
-                    <span class="text-gray-600">Estimated Tokens: <span class="font-semibold" x-text="jsonTokens"></span></span>
+                <div class="mt-3 text-sm text-slate-600 flex justify-between">
+                    <span>Bytes: <span class="font-semibold" x-text="jsonBytes"></span></span>
+                    <span>Tokens: <span class="font-semibold" x-text="jsonTokens"></span></span>
                 </div>
             </div>
 
             <!-- TONL Output -->
             <div>
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-xl font-bold text-gray-800">TONL Output</h3>
-                    <div class="flex gap-2">
-                        <button @click="tonlToJSON()" class="px-4 py-1 text-sm gradient-bg text-white rounded font-semibold hover:opacity-90 transition">
-                            ← Convert
-                        </button>
-                        <button @click="copyToClipboard(tonlOutput)" class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded font-medium transition">
-                            <span x-show="!copied">Copy</span>
-                            <span x-show="copied" class="text-green-600">Copied!</span>
-                        </button>
-                    </div>
+                    <h3 class="font-semibold text-slate-900">TONL Output</h3>
+                    <button @click="copyToClipboard(tonlOutput)" class="px-3 py-1.5 text-sm border border-slate-300 rounded-md hover:bg-slate-50 transition">
+                        <span x-show="!copied">Copy</span>
+                        <span x-show="copied" class="text-emerald-600">Copied!</span>
+                    </button>
                 </div>
 
                 <textarea
                     x-model="tonlOutput"
                     readonly
-                    class="w-full h-96 bg-gray-900 text-gray-300 rounded-lg p-4 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    placeholder="TONL output will appear here..."
+                    class="w-full h-96 bg-slate-900 text-slate-300 rounded-lg p-4 text-sm border-2 border-emerald-500 focus:outline-none resize-none"
+                    placeholder="TONL output..."
                 ></textarea>
 
-                <div class="mt-3 flex items-center justify-between text-sm">
-                    <span class="text-gray-600">Bytes: <span class="font-semibold" x-text="tonlBytes"></span></span>
-                    <span class="text-gray-600">Estimated Tokens: <span class="font-semibold" x-text="tonlTokens"></span></span>
+                <div class="mt-3 text-sm text-slate-600 flex justify-between">
+                    <span>Bytes: <span class="font-semibold" x-text="tonlBytes"></span></span>
+                    <span>Tokens: <span class="font-semibold text-emerald-600" x-text="tonlTokens"></span></span>
                 </div>
             </div>
 
         </div>
 
         <!-- Stats -->
-        <div class="mt-6 grid md:grid-cols-3 gap-4" x-show="savings.bytes > 0">
-            <div class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-xl p-6 text-center">
-                <div class="text-3xl font-bold text-green-600" x-text="savings.bytes + '%'"></div>
-                <div class="text-gray-700 font-medium mt-2">Byte Savings</div>
+        <div class="mt-8 grid md:grid-cols-3 gap-4" x-show="savings.bytes > 0">
+            <div class="border border-emerald-200 bg-emerald-50 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-emerald-700" x-text="savings.bytes + '%'"></div>
+                <div class="text-slate-600 mt-2">Byte Savings</div>
             </div>
 
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl p-6 text-center">
-                <div class="text-3xl font-bold text-blue-600" x-text="savings.tokens + '%'"></div>
-                <div class="text-gray-700 font-medium mt-2">Token Savings</div>
+            <div class="border border-emerald-200 bg-emerald-50 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-emerald-700" x-text="savings.tokens + '%'"></div>
+                <div class="text-slate-600 mt-2">Token Savings</div>
             </div>
 
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 rounded-xl p-6 text-center">
-                <div class="text-3xl font-bold text-purple-600" x-text="tonlBytes - jsonBytes"></div>
-                <div class="text-gray-700 font-medium mt-2">Bytes Saved</div>
-            </div>
-        </div>
-
-        <!-- Error Display -->
-        <div x-show="error" class="mt-6 bg-red-50 border-2 border-red-200 rounded-xl p-6">
-            <div class="flex items-start">
-                <svg class="w-6 h-6 text-red-600 mt-1 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div>
-                    <p class="text-red-800 font-semibold">Error</p>
-                    <p class="text-red-700 text-sm mt-1" x-text="error"></p>
-                </div>
+            <div class="border border-slate-200 bg-slate-50 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-slate-700" x-text="(tonlBytes - jsonBytes)"></div>
+                <div class="text-slate-600 mt-2">Bytes Saved</div>
             </div>
         </div>
 
-        <!-- Real-World Examples Section -->
+        <!-- Error -->
+        <div x-show="error" class="mt-6 bg-red-50 border border-red-200 rounded-lg p-6">
+            <p class="text-red-800 font-semibold mb-1">Error</p>
+            <p class="text-red-700 text-sm" x-text="error"></p>
+        </div>
+
+        <!-- Examples Links -->
         <div class="mt-20">
-            <h2 class="text-3xl font-bold text-gray-900 mb-8">Real-World Examples</h2>
+            <h2 class="text-3xl font-bold text-slate-900 mb-8">Code Examples</h2>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/query/01-basic-queries.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+            <div class="grid md:grid-cols-3 gap-6">
+                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/query/01-basic-queries.ts" target="_blank" class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition">
                     <div class="text-3xl mb-3">🔍</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Basic Queries</h3>
-                    <p class="text-gray-600 text-sm">Property access, wildcards, and filtering</p>
+                    <h3 class="font-semibold text-slate-900 mb-2">Basic Queries</h3>
+                    <p class="text-sm text-slate-600">Path expressions and filtering</p>
                 </a>
 
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/query/02-filter-expressions.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-                    <div class="text-3xl mb-3">🎯</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Filter Expressions</h3>
-                    <p class="text-gray-600 text-sm">Complex filters with operators</p>
-                </a>
-
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/modification/01-basic-crud.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/modification/01-basic-crud.ts" target="_blank" class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition">
                     <div class="text-3xl mb-3">✏️</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Basic CRUD</h3>
-                    <p class="text-gray-600 text-sm">Create, read, update, delete operations</p>
+                    <h3 class="font-semibold text-slate-900 mb-2">CRUD Operations</h3>
+                    <p class="text-sm text-slate-600">Modify and track changes</p>
                 </a>
 
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/modification/02-transactions.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-                    <div class="text-3xl mb-3">🔄</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Transactions</h3>
-                    <p class="text-gray-600 text-sm">Atomic operations with snapshots</p>
-                </a>
-
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/indexing/01-basic-indexing.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/indexing/01-basic-indexing.ts" target="_blank" class="border border-slate-200 rounded-lg p-6 hover:shadow-md transition">
                     <div class="text-3xl mb-3">🗂️</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Indexing</h3>
-                    <p class="text-gray-600 text-sm">Hash and BTree indices for fast lookups</p>
-                </a>
-
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/streaming/01-large-files.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-                    <div class="text-3xl mb-3">🌊</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Streaming</h3>
-                    <p class="text-gray-600 text-sm">Process multi-GB files efficiently</p>
-                </a>
-
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/integration/01-complete-application.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-                    <div class="text-3xl mb-3">🚀</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Complete App</h3>
-                    <p class="text-gray-600 text-sm">Full application using all features</p>
-                </a>
-
-                <a href="https://github.com/ersinkoc/tonl/blob/main/examples/navigation.ts" target="_blank" class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition">
-                    <div class="text-3xl mb-3">🧭</div>
-                    <h3 class="font-bold text-gray-900 mb-2">Navigation</h3>
-                    <p class="text-gray-600 text-sm">Tree traversal and iteration</p>
-                </a>
-
-                <a href="https://github.com/ersinkoc/tonl/tree/main/examples" target="_blank" class="bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 p-6 rounded-xl hover:shadow-xl transition">
-                    <div class="text-3xl mb-3">📚</div>
-                    <h3 class="font-bold text-gray-900 mb-2">View All Examples</h3>
-                    <p class="text-gray-600 text-sm">11 working examples on GitHub</p>
+                    <h3 class="font-semibold text-slate-900 mb-2">Indexing</h3>
+                    <p class="text-sm text-slate-600">Fast lookups with indices</p>
                 </a>
             </div>
         </div>
@@ -230,14 +171,14 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-12 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm">© 2025 TONL. Created by <a href="https://github.com/ersinkoc" class="text-purple-400 hover:text-purple-300">Ersin KOÇ</a>. MIT License.</p>
-                <div class="flex items-center space-x-4 mt-4 md:mt-0">
-                    <span class="text-sm">v1.0.1</span>
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-sm text-green-400">Production Ready</span>
+    <footer class="border-t border-slate-200 bg-white mt-20 py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center text-sm text-slate-600">
+                <p>© 2025 TONL. MIT License.</p>
+                <div class="flex items-center gap-4 mt-4 md:mt-0">
+                    <span>v1.0.1</span>
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <span class="text-emerald-600 font-medium">Production Ready</span>
                 </div>
             </div>
         </div>
@@ -248,18 +189,8 @@
             return {
                 jsonInput: `{
   "users": [
-    {
-      "id": 1,
-      "name": "Alice",
-      "age": 30,
-      "role": "admin"
-    },
-    {
-      "id": 2,
-      "name": "Bob",
-      "age": 25,
-      "role": "user"
-    }
+    { "id": 1, "name": "Alice", "age": 30, "role": "admin" },
+    { "id": 2, "name": "Bob", "age": 25, "role": "user" }
   ]
 }`,
                 tonlOutput: '',
@@ -279,32 +210,11 @@
                     try {
                         this.error = '';
                         const data = JSON.parse(this.jsonInput);
-
                         if (typeof TONL !== 'undefined' && TONL.encodeTONL) {
                             this.tonlOutput = TONL.encodeTONL(data);
                         } else {
-                            // Fallback simple encoder
                             this.tonlOutput = '#version 1.0\n' + JSON.stringify(data, null, 2);
                         }
-
-                        this.updateStats();
-                    } catch (e) {
-                        this.error = e.message;
-                        this.tonlOutput = '';
-                    }
-                },
-
-                tonlToJSON() {
-                    try {
-                        this.error = '';
-
-                        if (typeof TONL !== 'undefined' && TONL.decodeTONL) {
-                            const data = TONL.decodeTONL(this.tonlOutput);
-                            this.jsonInput = JSON.stringify(data, null, 2);
-                        } else {
-                            this.error = 'TONL library not loaded';
-                        }
-
                         this.updateStats();
                     } catch (e) {
                         this.error = e.message;
@@ -316,23 +226,19 @@
                         const data = JSON.parse(this.jsonInput);
                         this.jsonInput = JSON.stringify(data, null, 2);
                     } catch (e) {
-                        this.error = 'Invalid JSON: ' + e.message;
+                        this.error = 'Invalid JSON';
                     }
                 },
 
                 updateStats() {
                     this.jsonBytes = new Blob([this.jsonInput]).size;
                     this.tonlBytes = new Blob([this.tonlOutput]).size;
-
-                    // Rough token estimation (1 token ≈ 4 characters)
                     this.jsonTokens = Math.ceil(this.jsonInput.length / 4);
                     this.tonlTokens = Math.ceil(this.tonlOutput.length / 4);
 
                     if (this.jsonBytes > 0 && this.tonlBytes > 0) {
                         this.savings.bytes = Math.round(((this.jsonBytes - this.tonlBytes) / this.jsonBytes) * 100);
                         this.savings.tokens = Math.round(((this.jsonTokens - this.tonlTokens) / this.jsonTokens) * 100);
-                    } else {
-                        this.savings = { bytes: 0, tokens: 0 };
                     }
                 },
 
@@ -344,64 +250,12 @@
 
                 loadExample(type) {
                     const examples = {
-                        simple: `{
-  "name": "Alice Smith",
-  "age": 30,
-  "email": "alice@example.com",
-  "active": true
-}`,
-                        users: `{
-  "users": [
-    { "id": 1, "name": "Alice", "role": "admin", "verified": true },
-    { "id": 2, "name": "Bob", "role": "user", "verified": true },
-    { "id": 3, "name": "Carol", "role": "editor", "verified": false }
-  ]
-}`,
-                        nested: `{
-  "app": {
-    "name": "MyApp",
-    "version": "2.0",
-    "settings": {
-      "theme": "dark",
-      "language": "en"
-    }
-  }
-}`,
-                        ecommerce: `{
-  "products": [
-    {
-      "sku": "LAPTOP-001",
-      "name": "Professional Laptop",
-      "price": 1299.99,
-      "stock": 15,
-      "tags": ["electronics", "computers"]
-    },
-    {
-      "sku": "MOUSE-001",
-      "name": "Wireless Mouse",
-      "price": 29.99,
-      "stock": 100,
-      "tags": ["electronics", "accessories"]
-    }
-  ]
-}`,
-                        config: `{
-  "database": {
-    "host": "localhost",
-    "port": 5432,
-    "credentials": {
-      "username": "admin",
-      "password": "secret"
-    }
-  },
-  "cache": {
-    "enabled": true,
-    "ttl": 3600
-  }
-}`
+                        simple: '{\n  "name": "Alice",\n  "age": 30,\n  "email": "alice@example.com"\n}',
+                        users: '{\n  "users": [\n    { "id": 1, "name": "Alice", "role": "admin" },\n    { "id": 2, "name": "Bob", "role": "user" }\n  ]\n}',
+                        nested: '{\n  "app": {\n    "name": "MyApp",\n    "settings": {\n      "theme": "dark"\n    }\n  }\n}',
+                        config: '{\n  "database": {\n    "host": "localhost",\n    "port": 5432\n  },\n  "cache": {\n    "enabled": true\n  }\n}'
                     };
-
-                    this.jsonInput = examples[type] || examples.simple;
+                    this.jsonInput = examples[type];
                     this.jsonToTONL();
                 }
             }
