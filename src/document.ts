@@ -12,6 +12,7 @@ import { parsePath, QueryEvaluator } from './query/index.js';
 import { entries, keys, values, deepEntries, deepKeys, deepValues, walk, type WalkCallback, type WalkOptions, countNodes, find, findAll, some, every } from './navigation/index.js';
 import { readFileSync, writeFileSync } from 'fs';
 import { promises as fs } from 'fs';
+import { set as setByPath } from './modification/setter.js';
 
 /**
  * Document statistics
@@ -413,5 +414,33 @@ export class TONLDocument {
    */
   getData(): TONLValue {
     return this.data;
+  }
+
+  // ========================================
+  // Modification Methods (NEW in v0.6.5!)
+  // ========================================
+
+  /**
+   * Set a value at a specific path
+   *
+   * @param pathExpression - Path expression
+   * @param value - Value to set
+   * @returns this for chaining
+   *
+   * @example
+   * ```typescript
+   * doc.set('user.name', 'Alice Smith');
+   * doc.set('users[0].active', true);
+   * doc.set('user.profile.age', 31);
+   * ```
+   */
+  set(pathExpression: string, value: any): this {
+    const result = setByPath(this.data, pathExpression, value);
+    if (!result.success) {
+      throw new Error(result.error || 'Set operation failed');
+    }
+    // Recreate evaluator with updated data
+    this.evaluator = new QueryEvaluator(this.data);
+    return this;
   }
 }
