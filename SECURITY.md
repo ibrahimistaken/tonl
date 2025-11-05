@@ -12,7 +12,7 @@ We will respond to security reports within 48 hours and aim to publish fixes wit
 
 ## Security Features
 
-### ReDoS Protection (v0.8.1+)
+### ReDoS Protection (v1.0.2+)
 
 TONL includes built-in protection against Regular Expression Denial of Service (ReDoS) attacks in query filter expressions.
 
@@ -126,11 +126,11 @@ RegexExecutor.test(pattern, input, {
 - Consider query complexity budgets in your application
 - Use indexing for frequently-queried paths
 
-### 4. Path Traversal (v0.8.1+)
+### 4. Path Traversal (v1.0.2+)
 
 **Risk**: CLI file operations could be exploited to read/write arbitrary files.
 
-**Mitigation** (v0.8.1+):
+**Mitigation** (v1.0.2+):
 - All file paths validated before use
 - Directory traversal (../) blocked
 - Absolute paths must be within working directory
@@ -180,7 +180,7 @@ tonl encode \\server\share\file
 
 ## Security Changelog
 
-### v0.8.1 (2025-11-05) - Security Release
+### v1.0.2 (2025-11-05) - Security Release
 
 **[CRITICAL] BF001: ReDoS Vulnerability Fixed**
 - **Issue**: Filter evaluator compiled user-supplied regex without validation

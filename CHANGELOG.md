@@ -5,11 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - Security Hardening (2025-11-05)
+## [1.0.2] - 2025-11-05 - SECURITY RELEASE 🔒
 
 ### 🔒 SECURITY FIXES (9 vulnerabilities fixed)
 
-**⚠️ CRITICAL - All users should review and apply these fixes immediately**
+**⚠️ CRITICAL - All users must upgrade immediately**
+
+**This is a critical security release addressing 9 vulnerabilities including Remote DoS, Arbitrary File Access, Prototype Pollution, and more.**
 
 See [SECURITY.md](SECURITY.md) and [SECURITY-AUDIT-SUMMARY.md](SECURITY-AUDIT-SUMMARY.md) for complete details.
 

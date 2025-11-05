@@ -381,7 +381,7 @@ describe('Query Evaluator - Regression Tests', () => {
 **Severity:** CRITICAL
 **CVE:** CVE-2025-XXXX
 **Affected:** v0.1.0 - v0.8.0
-**Fixed In:** v0.8.1
+**Fixed In:** v1.0.2
 
 ## Summary
 Query evaluator allows prototype pollution via __proto__ and constructor
@@ -393,7 +393,7 @@ application. This can lead to authentication bypass, privilege escalation,
 or remote code execution depending on application code.
 
 ## Mitigation
-Upgrade to v0.8.1 immediately. No workaround available.
+Upgrade to v1.0.2 immediately. No workaround available.
 
 ## Credit
 Internal security audit

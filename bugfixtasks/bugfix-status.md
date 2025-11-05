@@ -277,7 +277,7 @@
 
 ### Next Week
 - [ ] Begin P1 issues (BF006-BF010)
-- [ ] Security release v0.8.1 with P0 fixes
+- [ ] Security release v1.0.2 with P0 fixes
 
 ---
 
@@ -347,31 +347,31 @@ No tasks currently blocked.
   - Severity: CRITICAL
   - CVE: Pending
   - Affected: v0.1.0 - v0.8.0
-  - Fixed In: v0.8.1
+  - Fixed In: v1.0.2
 
 - [ ] **SA-2025-002:** Path Traversal (BF002)
   - Severity: CRITICAL
   - CVE: Pending
   - Affected: v0.1.0 - v0.8.0
-  - Fixed In: v0.8.1
+  - Fixed In: v1.0.2
 
 - [ ] **SA-2025-003:** Buffer Overflow (BF003)
   - Severity: CRITICAL
   - CVE: Pending
   - Affected: v0.1.0 - v0.8.0
-  - Fixed In: v0.8.1
+  - Fixed In: v1.0.2
 
 - [ ] **SA-2025-004:** Prototype Pollution (BF004)
   - Severity: CRITICAL
   - CVE: Pending
   - Affected: v0.1.0 - v0.8.0
-  - Fixed In: v0.8.1
+  - Fixed In: v1.0.2
 
 - [ ] **SA-2025-005:** Command Injection Risk (BF005)
   - Severity: HIGH
   - CVE: Pending
   - Affected: v0.1.0 - v0.8.0
-  - Fixed In: v0.8.1
+  - Fixed In: v1.0.2
 
 ---
 

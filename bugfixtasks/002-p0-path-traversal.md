@@ -807,7 +807,7 @@ describe('PathValidator', () => {
 **Severity:** CRITICAL
 **CVE:** CVE-2025-XXXX
 **Affected:** v0.1.0 - v0.8.0
-**Fixed In:** v0.8.1
+**Fixed In:** v1.0.2
 
 ## Summary
 TONL CLI accepts unsanitized file paths, allowing attackers to read
@@ -818,7 +818,7 @@ Local attackers can read sensitive files (/etc/passwd, SSH keys),
 write to arbitrary locations, and potentially achieve code execution.
 
 ## Mitigation
-Upgrade to v0.8.1 immediately.
+Upgrade to v1.0.2 immediately.
 
 Workaround: Run TONL in restricted Docker container or sandbox.
 ```
