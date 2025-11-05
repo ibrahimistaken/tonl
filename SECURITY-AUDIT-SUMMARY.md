@@ -3,7 +3,7 @@
 **Audit Date:** 2025-11-05
 **Audit Type:** Comprehensive Internal Security Review
 **Auditor:** Claude (AI Security Analyst)
-**Project:** TONL v1.0.0 → v1.0.2 (Security Hardened)
+**Project:** TONL v1.0.0 → v1.0.3 (Security Hardened)
 **Status:** ✅ COMPLETE
 
 ---
@@ -358,7 +358,7 @@ it('should block __proto__ access', () => {
 
 ### Short-Term (Next Sprint)
 
-1. ⏳ **Release v1.0.2** - Security release with all fixes
+1. ⏳ **Release v1.0.3** - Security release with all fixes
 2. ⏳ **Publish security advisories** - For P0 vulnerabilities
 3. ⏳ **Request CVE assignments** - For critical bugs
 4. ⏳ **Update README** - Security badges, changelog
@@ -650,7 +650,7 @@ The TONL library is now suitable for production deployment:
 - Well-documented security features
 
 **Recommended Next Steps:**
-1. Release v1.0.2 (Security Release)
+1. Release v1.0.3 (Security Release)
 2. Publish security advisories
 3. Notify existing users
 4. Plan v0.9.0 with P2 fixes

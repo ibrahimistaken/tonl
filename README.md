@@ -8,9 +8,9 @@
 
 **TONL** is a production-ready data platform that combines compact serialization with powerful query, modification, indexing, and streaming capabilities. Designed for LLM token efficiency while providing a rich API for data access and manipulation.
 
-**🎉 Now v1.0.2 - Stable & Security Hardened!**
+**🎉 Now v1.0.3 - Stable & Fully Security Hardened!**
 
-**🔒 SECURITY RELEASE (v1.0.2 - 2025-11-05)**: Critical security fixes for 9 vulnerabilities including ReDoS protection, path traversal prevention, prototype pollution defense, buffer overflow protection, command injection prevention, and comprehensive input validation. **All users should upgrade immediately.** See [SECURITY.md](SECURITY.md), [SECURITY-AUDIT-SUMMARY.md](SECURITY-AUDIT-SUMMARY.md), and [SECURITY-FIXES-SUMMARY.md](SECURITY-FIXES-SUMMARY.md) for complete details.
+**🔒 SECURITY RELEASE (v1.0.3 - 2025-11-05)**: Complete security hardening with **all 15 vulnerabilities fixed** (100% resolution). Includes ReDoS protection, path traversal prevention, prototype pollution defense, buffer overflow protection, command injection prevention, input validation limits, file locking, query iteration limits, schema range validation, error sanitization, and cache isolation. **All users should upgrade immediately.** See [SECURITY.md](SECURITY.md), [SECURITY-AUDIT-SUMMARY.md](SECURITY-AUDIT-SUMMARY.md), [SECURITY-FIXES-SUMMARY.md](SECURITY-FIXES-SUMMARY.md), and [FINAL-SUMMARY.md](FINAL-SUMMARY.md) for complete details.
 
 ## ✨ Complete Feature Set (v1.0.0)
 
@@ -126,19 +126,19 @@ tonl format data.tonl --pretty --out formatted.tonl
 tonl stats data.json --tokenizer gpt-5
 ```
 
-## 📊 Quality Metrics (v1.0.2)
+## 📊 Quality Metrics (v1.0.3)
 
 ```
 ✅ Test Coverage:     496/496 tests (100%)
 ✅ Security Tests:    96 tests (exploit + regression)
-✅ Security Hardened: 9 vulnerabilities fixed 🔒
+✅ Security Hardened: 15/15 vulnerabilities fixed (100%) 🔒
 ✅ Code Quality:      TypeScript strict mode
 ✅ Dependencies:      0 runtime deps
 ✅ Bundle Size:       8.84 KB gzipped (browser)
 ✅ Performance:       10-1600x faster than targets
 ✅ Documentation:     15+ comprehensive guides
 ✅ Examples:          11 working examples
-✅ Production:        Ready & Secure ✅
+✅ Production:        Ready & Fully Secure ✅
 ```
 
 ### Streaming API
@@ -165,7 +165,7 @@ for await (const tonlLine of encodeIterator(dataStream)) {
 ```html
 <!-- ESM (modern browsers) -->
 <script type="module">
-  import { encodeTONL, decodeTONL } from 'https://cdn.jsdelivr.net/npm/tonl@1.0.2/+esm';
+  import { encodeTONL, decodeTONL } from 'https://cdn.jsdelivr.net/npm/tonl@1.0.3/+esm';
 
   const data = { users: [{ id: 1, name: "Alice" }] };
   const tonl = encodeTONL(data);
@@ -173,7 +173,7 @@ for await (const tonlLine of encodeIterator(dataStream)) {
 </script>
 
 <!-- UMD (universal) -->
-<script src="https://unpkg.com/tonl@1.0.2/dist/browser/tonl.umd.js"></script>
+<script src="https://unpkg.com/tonl@1.0.3/dist/browser/tonl.umd.js"></script>
 <script>
   const tonl = TONL.encodeTONL({ hello: "world" });
 </script>

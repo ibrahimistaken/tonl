@@ -1,4 +1,4 @@
-# TONL Format Specification v1.0.2
+# TONL Format Specification v1.0.3
 
 **Version:** 1.0.0
 **Status:** Stable & Production Ready
