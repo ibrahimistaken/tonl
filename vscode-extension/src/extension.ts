@@ -1,10 +1,18 @@
 /**
- * TONL VS Code Extension (T038-T041 - Foundation)
+ * TONL VS Code Extension (T038-T040)
  *
- * Provides language support for TONL files
+ * Provides language support for TONL files including:
+ * - Syntax highlighting (T038)
+ * - Document Explorer (T039)
+ * - IntelliSense (T040)
  */
 
 import * as vscode from 'vscode';
+import { TONLTreeDataProvider } from './tree-provider';
+import { TONLCompletionProvider } from './completion-provider';
+import { TONLHoverProvider } from './hover-provider';
+import { TONLDiagnosticsProvider } from './diagnostics-provider';
+import { decodeTONL, encodeTONL } from 'tonl';
 
 /**
  * Extension activation
@@ -25,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('tonl.showDocumentTree', showDocumentTree)
   );
 
-  // Register document tree provider (foundation)
+  // Register document tree provider (T039)
   const treeDataProvider = new TONLTreeDataProvider();
   vscode.window.registerTreeDataProvider('tonlDocumentTree', treeDataProvider);
 
@@ -34,9 +42,53 @@ export function activate(context: vscode.ExtensionContext) {
     treeDataProvider.refresh();
   });
 
-  // Refresh tree when document changes
-  vscode.workspace.onDidChangeTextDocument(() => {
-    treeDataProvider.refresh();
+  // Refresh tree when document changes (debounced)
+  let timeout: NodeJS.Timeout | undefined;
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    if (event.document.languageId === 'tonl') {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        treeDataProvider.refresh();
+      }, 500); // 500ms debounce
+    }
+  });
+
+  // Register completion provider (T040)
+  context.subscriptions.push(
+    vscode.languages.registerCompletionItemProvider(
+      'tonl',
+      new TONLCompletionProvider(),
+      '@', ':', ','
+    )
+  );
+
+  // Register hover provider (T040)
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider('tonl', new TONLHoverProvider())
+  );
+
+  // Register diagnostics provider (T040)
+  const diagnosticsProvider = new TONLDiagnosticsProvider();
+  context.subscriptions.push(diagnosticsProvider);
+
+  // Update diagnostics on document open/change
+  context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument((document) => {
+      diagnosticsProvider.updateDiagnostics(document);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument((event) => {
+      diagnosticsProvider.updateDiagnostics(event.document);
+    })
+  );
+
+  // Update diagnostics for already open documents
+  vscode.workspace.textDocuments.forEach((document) => {
+    diagnosticsProvider.updateDiagnostics(document);
   });
 }
 
@@ -57,15 +109,12 @@ async function validateDocument() {
   }
 
   try {
-    // Basic validation - check syntax
     const text = document.getText();
-
-    // TODO: Use tonl library to validate
-    // For now, just show success
-    vscode.window.showInformationMessage('TONL document is valid');
+    decodeTONL(text); // Validate by parsing
+    vscode.window.showInformationMessage('✓ TONL document is valid');
   } catch (error) {
     vscode.window.showErrorMessage(
-      `Validation error: ${error instanceof Error ? error.message : String(error)}`
+      `✗ Validation error: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
@@ -87,11 +136,23 @@ async function formatDocument() {
   }
 
   try {
-    // TODO: Use tonl library to format
-    vscode.window.showInformationMessage('TONL formatting coming soon');
+    const text = document.getText();
+    const parsed = decodeTONL(text);
+    const formatted = encodeTONL(parsed);
+
+    // Replace entire document
+    const edit = new vscode.WorkspaceEdit();
+    const fullRange = new vscode.Range(
+      document.positionAt(0),
+      document.positionAt(text.length)
+    );
+    edit.replace(document.uri, fullRange, formatted);
+    await vscode.workspace.applyEdit(edit);
+
+    vscode.window.showInformationMessage('✓ TONL document formatted');
   } catch (error) {
     vscode.window.showErrorMessage(
-      `Formatting error: ${error instanceof Error ? error.message : String(error)}`
+      `✗ Formatting error: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
@@ -102,57 +163,6 @@ async function formatDocument() {
 async function showDocumentTree() {
   // Tree view is always visible in sidebar
   vscode.window.showInformationMessage('Check TONL Explorer in the sidebar');
-}
-
-/**
- * Tree data provider for TONL documents (T039 - Foundation)
- */
-class TONLTreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData = new vscode.EventEmitter<TreeItem | undefined | void>();
-  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
-
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
-  }
-
-  getTreeItem(element: TreeItem): vscode.TreeItem {
-    return element;
-  }
-
-  async getChildren(element?: TreeItem): Promise<TreeItem[]> {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor || editor.document.languageId !== 'tonl') {
-      return [];
-    }
-
-    if (!element) {
-      // Root level
-      return [
-        new TreeItem('Document Root', vscode.TreeItemCollapsibleState.Collapsed)
-      ];
-    }
-
-    // TODO: Parse TONL and build tree
-    // For now, return empty
-    return [];
-  }
-}
-
-/**
- * Tree item
- */
-class TreeItem extends vscode.TreeItem {
-  constructor(
-    public readonly label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly value?: any
-  ) {
-    super(label, collapsibleState);
-
-    if (value !== undefined) {
-      this.description = String(value);
-    }
-  }
 }
 
 /**

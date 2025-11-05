@@ -12,6 +12,12 @@
       "include": "#headers"
     },
     {
+      "include": "#inline-objects"
+    },
+    {
+      "include": "#arrays"
+    },
+    {
       "include": "#values"
     }
   ],
@@ -20,7 +26,7 @@
       "patterns": [
         {
           "name": "comment.line.number-sign.tonl",
-          "match": "^#.*$"
+          "match": "^\\s*#.*$"
         }
       ]
     },
@@ -28,10 +34,13 @@
       "patterns": [
         {
           "name": "meta.directive.tonl",
-          "match": "^@(version|delimiter|type|schema)\\b",
+          "match": "^@(version|delimiter|type|schema|types)\\b(.*)$",
           "captures": {
             "1": {
               "name": "keyword.control.directive.tonl"
+            },
+            "2": {
+              "name": "string.unquoted.tonl"
             }
           }
         }
@@ -40,6 +49,18 @@
     "headers": {
       "patterns": [
         {
+          "name": "entity.name.section.array.tonl",
+          "match": "^([a-zA-Z_][a-zA-Z0-9_]*)\\[(\\d+)\\]:",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.tonl"
+            },
+            "2": {
+              "name": "constant.numeric.tonl"
+            }
+          }
+        },
+        {
           "name": "entity.name.section.tonl",
           "match": "^([a-zA-Z_][a-zA-Z0-9_]*):",
           "captures": {
@@ -47,15 +68,93 @@
               "name": "entity.name.tag.tonl"
             }
           }
-        },
+        }
+      ]
+    },
+    "inline-objects": {
+      "patterns": [
         {
-          "name": "entity.name.section.array.tonl",
-          "match": "^([a-zA-Z_][a-zA-Z0-9_]*)\\[\\d+\\]:",
+          "name": "meta.inline-object.tonl",
+          "begin": "\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.dictionary.begin.tonl"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.dictionary.end.tonl"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#object-keys"
+            },
+            {
+              "include": "#delimiters"
+            },
+            {
+              "include": "#values"
+            },
+            {
+              "include": "#inline-objects"
+            }
+          ]
+        }
+      ]
+    },
+    "arrays": {
+      "patterns": [
+        {
+          "name": "meta.array.tonl",
+          "begin": "\\[",
+          "end": "\\]",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.array.begin.tonl"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.array.end.tonl"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#delimiters"
+            },
+            {
+              "include": "#values"
+            },
+            {
+              "include": "#inline-objects"
+            },
+            {
+              "include": "#arrays"
+            }
+          ]
+        }
+      ]
+    },
+    "object-keys": {
+      "patterns": [
+        {
+          "name": "meta.object-key.tonl",
+          "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*:",
           "captures": {
             "1": {
-              "name": "entity.name.tag.tonl"
+              "name": "variable.other.property.tonl"
             }
           }
+        }
+      ]
+    },
+    "delimiters": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.tonl",
+          "match": "[,|;\\t]"
         }
       ]
     },
@@ -95,7 +194,7 @@
           "patterns": [
             {
               "name": "constant.character.escape.tonl",
-              "match": "\\\\."
+              "match": "\\\\([\"\\\\/bfnrt]|u[0-9a-fA-F]{4})"
             }
           ]
         }
@@ -105,7 +204,7 @@
       "patterns": [
         {
           "name": "constant.numeric.tonl",
-          "match": "-?\\d+\\.?\\d*([eE][+-]?\\d+)?"
+          "match": "-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?"
         }
       ]
     },

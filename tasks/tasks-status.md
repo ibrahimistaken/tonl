@@ -1,13 +1,14 @@
 # TONL Development Tasks - Status Tracker
 
-**Last Updated:** 2025-11-04
+**Last Updated:** 2025-11-05
 **Total Tasks:** 41
-**Completed:** 37
+**Completed:** 40
 **In Progress:** 0
-**Not Started:** 4
+**Not Started:** 1
 **Blocked:** 0
 
 **🎊 TONL v1.0.0 - STABLE RELEASE! 🎊**
+**🚀 VS Code Extension v0.1.0 - T038, T039, T040 COMPLETE! 🚀**
 
 ---
 
@@ -20,7 +21,7 @@
 | Modification API | F002 | 10 | 10 | 🟢 100% ✅ COMPLETE! |
 | Indexing System | F003 | 8 | 8 | 🟢 100% ✅ COMPLETE! |
 | Streaming Query | F004 | 6 | 6 | 🟢 100% ✅ COMPLETE! |
-| REPL & Tools | F005 | 7 | 3 | 🟢 42.8% (REPL ✅, VS Code 🚧) |
+| REPL & Tools | F005 | 7 | 6 | 🟢 85.7% (REPL ✅, VS Code ✅) |
 
 ### By Priority
 - **P1 (Critical):** 23 tasks
@@ -29,10 +30,11 @@
 
 ### Overall Progress
 ```
-[█████████████████████████████████████░░░] 90.2%
+[████████████████████████████████████████░] 97.6%
 ```
 
 **🚀 PRODUCTION READY - v1.0.0 RELEASED!**
+**✨ VS Code Extension v0.1.0 - Ready for Distribution!**
 
 ---
 
@@ -311,7 +313,7 @@
 
 ## Feature F005: REPL & Tools (v0.8.0)
 
-**Status:** 🟡 Partial | **Priority:** P3 - LOW | **Progress:** 3/7 (REPL Complete, VS Code Foundations)
+**Status:** 🟢 Near Complete | **Priority:** P3 - LOW | **Progress:** 6/7 (REPL & VS Code Extension Complete)
 
 ### Tasks
 
@@ -338,28 +340,34 @@
   - Completion Date: 2025-11-04
   - Note: In-memory history implemented
 
-- [ ] **T038** - VS Code Extension - Syntax Highlighting (P2, 3 days)
-  - Status: 🔴 Not Started
-  - Assignee: TBD
+- [x] **T038** - VS Code Extension - Syntax Highlighting (P2, 3 days) ✅ COMPLETED
+  - Status: 🟢 Completed
+  - Assignee: Claude
   - Dependencies: None
   - Blocks: T039, T040
+  - Completion Date: 2025-11-05
+  - Note: Full TextMate grammar with inline objects/arrays, delimiters, directives
 
-- [ ] **T039** - VS Code Extension - Document Explorer (P2, 4 days)
-  - Status: 🔴 Not Started
-  - Assignee: TBD
-  - Dependencies: T038
+- [x] **T039** - VS Code Extension - Document Explorer (P2, 4 days) ✅ COMPLETED
+  - Status: 🟢 Completed
+  - Assignee: Claude
+  - Dependencies: T038 ✅
   - Blocks: None
+  - Completion Date: 2025-11-05
+  - Note: Interactive tree view with real-time parsing, type icons, tooltips
 
-- [ ] **T040** - VS Code Extension - IntelliSense (P3, 3 days)
-  - Status: 🔴 Not Started
-  - Assignee: TBD
-  - Dependencies: T038
+- [x] **T040** - VS Code Extension - IntelliSense (P3, 3 days) ✅ COMPLETED
+  - Status: 🟢 Completed
+  - Assignee: Claude
+  - Dependencies: T038 ✅
   - Blocks: None
+  - Completion Date: 2025-11-05
+  - Note: Auto-completion, hover info, diagnostics (parse errors, duplicate keys, delimiters)
 
 - [ ] **T041** - Documentation & Release v0.8.0 (P1, 2 days)
   - Status: 🔴 Not Started
   - Assignee: TBD
-  - Dependencies: T035-T040
+  - Dependencies: T035-T040 ✅
   - Blocks: None
 
 ---

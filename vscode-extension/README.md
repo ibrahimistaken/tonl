@@ -1,33 +1,57 @@
 # TONL VS Code Extension
 
-Syntax highlighting and language support for TONL (Token-Optimized Notation Language) files.
+Complete language support for TONL (Token-Optimized Notation Language) files with syntax highlighting, intelligent code completion, and interactive document exploration.
 
-## Features (T038-T041)
+## Features
 
-### ✅ Syntax Highlighting (T038)
-- TONL file recognition (`.tonl` extension)
-- Color highlighting for:
-  - Directives (`@version`, `@delimiter`, `@type`, `@schema`)
-  - Comments (`# comment`)
-  - Headers (`key:`, `array[0]:`)
-  - Strings (double quotes, triple quotes)
-  - Numbers, booleans, null
-  - Delimiters
+### ✅ Syntax Highlighting (T038) - Complete
+- **TONL file recognition** - Automatic language mode for `.tonl` files
+- **Comprehensive syntax coloring**:
+  - Directives: `@version`, `@delimiter`, `@types`, `@schema`
+  - Comments: `# comment lines`
+  - Field headers: `key:`, `array[0]:`
+  - Strings: double quotes `"..."` and triple quotes `"""..."""`
+  - Numbers: integers, decimals, scientific notation
+  - Booleans: `true`, `false`
+  - Null values: `null`
+  - Inline objects: `{key: value, ...}`
+  - Inline arrays: `[item1, item2, ...]`
+  - Delimiters: `,`, `|`, `;`, `\t`
+  - Escape sequences in strings
 
-### 🚧 Document Explorer (T039) - Foundation
-- Tree view for TONL documents
-- Navigate document structure
-- View node types and values
+### ✅ Document Explorer (T039) - Complete
+- **Interactive tree view** in sidebar
+- **Real-time parsing** of TONL documents
+- **Visual structure navigation**:
+  - Collapsible objects and arrays
+  - Type icons for all value types
+  - Value previews for primitives
+  - Array length and object property counts
+- **Intelligent tooltips** showing paths and types
+- **Auto-refresh** on document changes (debounced)
+- **Error display** for invalid TONL syntax
 
-### 🚧 IntelliSense (T040) - Foundation
-- Auto-completion for field names
-- Hover information
-- Signature help
+### ✅ IntelliSense (T040) - Complete
+- **Auto-completion**:
+  - Directive suggestions (`@version`, `@delimiter`, etc.)
+  - Value completions (`true`, `false`, `null`)
+  - Snippet support for strings, objects, and arrays
+  - Context-aware suggestions
+- **Hover information**:
+  - Type detection for all values
+  - Directive documentation
+  - Field name hints
+  - Value type indicators
+- **Real-time diagnostics**:
+  - Parse error detection with line numbers
+  - Duplicate key warnings
+  - Inconsistent delimiter detection
+  - Schema validation messages
 
-### 🚧 Commands (T041) - Foundation
-- Validate Document
-- Format Document
-- Show Document Tree
+### ✅ Commands
+- **TONL: Validate Document** - Parse and validate TONL syntax
+- **TONL: Format Document** - Round-trip format via encode/decode
+- **TONL: Show Document Tree** - Open tree explorer sidebar
 
 ## Installation
 
@@ -48,28 +72,66 @@ code --install-extension tonl-vscode-0.1.0.vsix
 
 ## Usage
 
+### Basic Editing
 1. Open any `.tonl` file
 2. Syntax highlighting activates automatically
-3. Use commands from Command Palette (Ctrl+Shift+P):
-   - `TONL: Validate Document`
-   - `TONL: Format Document`
-   - `TONL: Show Document Tree`
+3. IntelliSense provides suggestions as you type
+4. Hover over elements for type information
+
+### Document Explorer
+1. Open a `.tonl` file
+2. View the "TONL Explorer" in the sidebar
+3. Navigate through the document structure
+4. Click on elements to see tooltips with paths and values
+
+### Commands
+Access commands via Command Palette (Ctrl+Shift+P / Cmd+Shift+P):
+- **TONL: Validate Document** - Check for syntax errors
+- **TONL: Format Document** - Reformat the document
+- **TONL: Show Document Tree** - Open explorer view
+
+### IntelliSense Features
+- Type `@` to see directive completions
+- Type `:` after a field name for value suggestions
+- Hover over any element to see type and documentation
+- Real-time error highlighting in the editor
 
 ## Example
 
 ```tonl
+# TONL Document Example
 @version 1.0
 @delimiter ,
+@types {name: string, age: number, active: boolean}
 
+# User profile
 user:
-  name, Alice
-  age, 30
-  email, alice@example.com
+  name: Alice Johnson
+  age: 30
+  email: alice@example.com
+  active: true
 
+# Inline object notation
+settings: {theme: dark, notifications: true}
+
+# Array of users
 users[0]:
-  id, 1
-  name, Bob
-  active, true
+  id: 1
+  name: Bob Smith
+  role: admin
+
+users[1]:
+  id: 2
+  name: Carol Davis
+  role: user
+
+# Nested structure
+config:
+  database:
+    host: localhost
+    port: 5432
+    credentials: {username: admin, password: secret}
+  features: [auth, logging, caching]
 ```
 
 ## Development
@@ -95,7 +157,7 @@ npm run package
 
 ## Extension Settings
 
-This extension contributes the following settings:
+This extension currently has no configurable settings. Future versions may include:
 
 - `tonl.validateOnSave`: Enable validation on save
 - `tonl.formatOnSave`: Enable formatting on save
@@ -103,19 +165,33 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-- Document tree view not yet implemented (foundation in place)
-- IntelliSense not yet implemented (foundation in place)
-- Large file performance needs optimization
+- Tree view performance may degrade with very large files (>10K lines)
+- Format command does a full encode/decode cycle (may change formatting slightly)
+- Diagnostics update on every keystroke (500ms debounced)
 
 ## Release Notes
 
-### 0.1.0 (Foundation)
+### 0.1.0 - Initial Release
 
-Initial release with:
-- ✅ Syntax highlighting
-- 🚧 Document explorer (foundation)
-- 🚧 IntelliSense (foundation)
-- 🚧 Commands (foundation)
+**Complete implementation of T038, T039, and T040:**
+
+✅ **T038 - Syntax Highlighting (Complete)**
+- Full TextMate grammar for TONL syntax
+- Support for all TONL features including inline objects/arrays
+- Proper escape sequence highlighting
+- Directive and delimiter recognition
+
+✅ **T039 - Document Explorer (Complete)**
+- Interactive tree view with real-time parsing
+- Type-aware icons and tooltips
+- Collapsible structure navigation
+- Error handling for invalid documents
+
+✅ **T040 - IntelliSense (Complete)**
+- Auto-completion for directives and values
+- Hover information with type detection
+- Real-time diagnostics (parse errors, duplicate keys, delimiter warnings)
+- Context-aware suggestions
 
 ## Contributing
 
