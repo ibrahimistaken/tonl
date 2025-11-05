@@ -18,6 +18,7 @@ import type { TONLValue } from '../types.js';
 import { createContext, createChildContext, isMaxDepthReached, type EvaluationContext } from './context.js';
 import { QueryCache, getGlobalCache } from './cache.js';
 import { evaluateFilterExpression } from './filter-evaluator.js';
+import { SecurityError } from '../errors/index.js';
 
 /**
  * Query Evaluator - evaluates path expressions against documents
@@ -385,7 +386,11 @@ export class QueryEvaluator {
           filtered.push(item);
         }
       } catch (error) {
-        // Skip items that cause evaluation errors
+        // Re-throw security errors (ReDoS protection, etc.)
+        if (error instanceof SecurityError) {
+          throw error;
+        }
+        // Skip items that cause normal evaluation errors
         continue;
       }
     }

@@ -121,6 +121,31 @@ export class TONLTypeError extends TONLError {
 }
 
 /**
+ * Security error - security-related issues
+ * Used for ReDoS protection, path traversal, injection attacks, etc.
+ */
+export class SecurityError extends Error {
+  constructor(message: string, public readonly details?: Record<string, any>) {
+    super(message);
+    this.name = 'SecurityError';
+    Error.captureStackTrace(this, this.constructor);
+  }
+
+  toString(): string {
+    let result = `${this.name}: ${this.message}`;
+
+    if (this.details) {
+      result += '\n  Details:';
+      for (const [key, value] of Object.entries(this.details)) {
+        result += `\n    ${key}: ${JSON.stringify(value)}`;
+      }
+    }
+
+    return result;
+  }
+}
+
+/**
  * Helper to format error location
  */
 export function formatErrorLocation(

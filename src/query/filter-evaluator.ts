@@ -14,6 +14,8 @@ import type {
   BinaryOperator,
   UnaryOperator
 } from './types.js';
+import { RegexExecutor } from './regex-executor.js';
+import { SecurityError } from '../errors/index.js';
 
 /**
  * Evaluate a filter expression against a current value (context item)
@@ -88,11 +90,18 @@ function evaluateBinaryExpression(
     case 'endsWith':
       return String(left).endsWith(String(right));
     case 'matches':
-      // Regex match
+      // Regex match with ReDoS protection
       try {
-        const regex = new RegExp(String(right));
-        return regex.test(String(left));
+        return RegexExecutor.test(String(right), String(left), {
+          timeout: 100, // 100ms timeout
+        });
       } catch (e) {
+        if (e instanceof SecurityError) {
+          // Log security event but don't expose details to user
+          console.warn('[SECURITY] Unsafe regex pattern blocked:', e.message);
+          throw e; // Re-throw security errors
+        }
+        // Invalid regex syntax or other errors
         return false;
       }
 
@@ -194,9 +203,16 @@ function evaluateFunctionExpression(
         throw new Error('matches() requires exactly 2 arguments');
       }
       try {
-        const regex = new RegExp(String(args[1]));
-        return regex.test(String(args[0]));
+        return RegexExecutor.test(String(args[1]), String(args[0]), {
+          timeout: 100, // 100ms timeout
+        });
       } catch (e) {
+        if (e instanceof SecurityError) {
+          // Log security event
+          console.warn('[SECURITY] Unsafe regex pattern blocked in matches():', e.message);
+          throw e; // Re-throw security errors
+        }
+        // Invalid regex syntax or other errors
         return false;
       }
 
