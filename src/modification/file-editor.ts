@@ -2,6 +2,7 @@
  * File Editor for Safe In-Place Editing (T017 - Simplified)
  *
  * Provides atomic file operations with backup support
+ * SECURITY FIX (BF011): Added file locking to prevent race conditions
  */
 
 import { readFileSync, writeFileSync, existsSync, renameSync, unlinkSync, copyFileSync } from 'fs';
@@ -9,6 +10,63 @@ import { promises as fs } from 'fs';
 import { decodeTONL } from '../decode.js';
 import { encodeTONL } from '../encode.js';
 import type { EncodeOptions } from '../types.js';
+
+/**
+ * Simple file lock using lock files
+ * SECURITY FIX (BF011): Prevents concurrent modifications
+ */
+class FileLock {
+  private lockPath: string;
+  private locked: boolean = false;
+
+  constructor(filePath: string) {
+    this.lockPath = `${filePath}.lock`;
+  }
+
+  async acquire(timeoutMs: number = 5000): Promise<void> {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeoutMs) {
+      try {
+        // Try to create lock file exclusively (fails if exists)
+        await fs.writeFile(this.lockPath, String(process.pid), { flag: 'wx' });
+        this.locked = true;
+        return;
+      } catch (error: any) {
+        if (error.code === 'EEXIST') {
+          // Lock file exists, wait and retry
+          await new Promise(resolve => setTimeout(resolve, 50));
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    throw new Error(`Failed to acquire file lock after ${timeoutMs}ms`);
+  }
+
+  async release(): Promise<void> {
+    if (this.locked && existsSync(this.lockPath)) {
+      try {
+        await fs.unlink(this.lockPath);
+      } catch (error) {
+        // Ignore errors during unlock
+      }
+      this.locked = false;
+    }
+  }
+
+  releaseSync(): void {
+    if (this.locked && existsSync(this.lockPath)) {
+      try {
+        unlinkSync(this.lockPath);
+      } catch (error) {
+        // Ignore errors during unlock
+      }
+      this.locked = false;
+    }
+  }
+}
 
 export interface FileEditorOptions {
   /**
@@ -91,35 +149,44 @@ export class FileEditor {
    * 3. Rename temp file to original (atomic on most systems)
    */
   async save(): Promise<void> {
-    // SECURITY NOTE (BF011): Use unique temp filename to reduce collision risk
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(7);
-    const tempPath = `${this.filePath}.tmp.${timestamp}.${random}`;
-    const backupPath = `${this.filePath}${this.options.backupSuffix}`;
+    // SECURITY FIX (BF011): Acquire file lock before save
+    const lock = new FileLock(this.filePath);
 
     try {
-      // Create backup
-      if (this.options.backup && existsSync(this.filePath)) {
-        await fs.copyFile(this.filePath, backupPath);
+      await lock.acquire(5000); // 5 second timeout
+
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(7);
+      const tempPath = `${this.filePath}.tmp.${timestamp}.${random}`;
+      const backupPath = `${this.filePath}${this.options.backupSuffix}`;
+
+      try {
+        // Create backup
+        if (this.options.backup && existsSync(this.filePath)) {
+          await fs.copyFile(this.filePath, backupPath);
+        }
+
+        // Encode to TONL
+        const tonlContent = encodeTONL(this.data, this.options.encoding);
+
+        // Write to temp file
+        await fs.writeFile(tempPath, tonlContent, 'utf-8');
+
+        // Atomic rename
+        await fs.rename(tempPath, this.filePath);
+
+        // Update original content
+        this.originalContent = tonlContent;
+      } catch (error) {
+        // Cleanup temp file if it exists
+        if (existsSync(tempPath)) {
+          await fs.unlink(tempPath).catch(() => {});
+        }
+        throw error;
       }
-
-      // Encode to TONL
-      const tonlContent = encodeTONL(this.data, this.options.encoding);
-
-      // Write to temp file
-      await fs.writeFile(tempPath, tonlContent, 'utf-8');
-
-      // Atomic rename
-      await fs.rename(tempPath, this.filePath);
-
-      // Update original content
-      this.originalContent = tonlContent;
-    } catch (error) {
-      // Cleanup temp file if it exists
-      if (existsSync(tempPath)) {
-        await fs.unlink(tempPath).catch(() => {});
-      }
-      throw error;
+    } finally {
+      // SECURITY FIX (BF011): Always release lock
+      await lock.release();
     }
   }
 
@@ -127,8 +194,23 @@ export class FileEditor {
    * Save changes synchronously (atomic)
    */
   saveSync(): void {
-    const tempPath = `${this.filePath}.tmp`;
+    // SECURITY FIX (BF011): Use unique temp filename
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(7);
+    const tempPath = `${this.filePath}.tmp.${timestamp}.${random}`;
     const backupPath = `${this.filePath}${this.options.backupSuffix}`;
+    const lock = new FileLock(this.filePath);
+
+    // Simple sync lock: create lock file
+    const lockPath = lock['lockPath'];
+    try {
+      writeFileSync(lockPath, String(process.pid), { flag: 'wx' });
+    } catch (error: any) {
+      if (error.code === 'EEXIST') {
+        throw new Error('File is locked by another process');
+      }
+      throw error;
+    }
 
     try {
       // Create backup
@@ -153,6 +235,9 @@ export class FileEditor {
         unlinkSync(tempPath);
       }
       throw error;
+    } finally {
+      // Release lock
+      lock.releaseSync();
     }
   }
 
