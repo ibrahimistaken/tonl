@@ -152,12 +152,118 @@
                         </div>
                         <div class="text-xs text-slate-500">100 · 31 KB · ~45%</div>
                     </button>
-                    <button @click="loadExample('apiLogs')" class="group p-3 bg-white border border-slate-300 rounded-lg hover:border-slate-400 hover:shadow-md transition text-left">
+                    <button @click="loadExample('apiLogs')" class="group p-3 bg-white border border-emerald-300 rounded-lg hover:border-emerald-500 hover:shadow-md transition text-left">
                         <div class="flex items-center gap-2 mb-1">
                             <span class="text-xl">📋</span>
-                            <span class="font-semibold text-sm text-slate-700">API Logs</span>
+                            <span class="font-semibold text-sm text-emerald-700">API Logs</span>
                         </div>
-                        <div class="text-xs text-slate-500">20 · 5 KB · ~41%</div>
+                        <div class="text-xs text-slate-500">20 · 5 KB · ~40%</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- More Examples -->
+            <div class="mb-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 shadow-sm">
+                <h4 class="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                    <span>🎯</span> Common Use Cases
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('logs')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">📝</span>
+                            <span class="font-semibold text-sm text-blue-700">Logs</span>
+                        </div>
+                        <div class="text-xs text-slate-500">5 logs · ~38%</div>
+                    </button>
+                    <button @click="loadExample('analytics')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">📊</span>
+                            <span class="font-semibold text-sm text-blue-700">Analytics</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Report · ~42%</div>
+                    </button>
+                    <button @click="loadExample('timeseries')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">📈</span>
+                            <span class="font-semibold text-sm text-blue-700">Time Series</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Sensor · ~45%</div>
+                    </button>
+                    <button @click="loadExample('api')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">🔌</span>
+                            <span class="font-semibold text-sm text-blue-700">API Response</span>
+                        </div>
+                        <div class="text-xs text-slate-500">REST · ~38%</div>
+                    </button>
+                    <button @click="loadExample('social')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">💬</span>
+                            <span class="font-semibold text-sm text-blue-700">Social Feed</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Posts · ~36%</div>
+                    </button>
+                    <button @click="loadExample('catalog')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">📦</span>
+                            <span class="font-semibold text-sm text-blue-700">Catalog</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Products · ~43%</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Complex Examples -->
+            <div class="mb-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200 shadow-sm">
+                <h4 class="text-sm font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                    <span>🏗️</span> Complex Structures
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('nested')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">🏢</span>
+                            <span class="font-semibold text-sm text-purple-700">Nested</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Deep · ~35%</div>
+                    </button>
+                    <button @click="loadExample('large')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">🗄️</span>
+                            <span class="font-semibold text-sm text-purple-700">Large Company</span>
+                        </div>
+                        <div class="text-xs text-slate-500">3 employees · ~37%</div>
+                    </button>
+                    <button @click="loadExample('ecommerce')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">🛒</span>
+                            <span class="font-semibold text-sm text-purple-700">E-Commerce</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Store · ~39%</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Simple Examples -->
+            <div class="mb-4">
+                <h4 class="text-sm font-semibold text-slate-700 mb-2">Quick Start</h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('small')" class="group p-2 bg-white border border-slate-200 rounded-lg hover:border-slate-400 hover:shadow-sm transition text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">📄</span>
+                            <span class="font-medium text-xs text-slate-700">Simple</span>
+                        </div>
+                    </button>
+                    <button @click="loadExample('users')" class="group p-2 bg-white border border-slate-200 rounded-lg hover:border-slate-400 hover:shadow-sm transition text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">👥</span>
+                            <span class="font-medium text-xs text-slate-700">Users</span>
+                        </div>
+                    </button>
+                    <button @click="loadExample('config')" class="group p-2 bg-white border border-slate-200 rounded-lg hover:border-slate-400 hover:shadow-sm transition text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">⚙️</span>
+                            <span class="font-medium text-xs text-slate-700">Config</span>
+                        </div>
                     </button>
                 </div>
                 <div class="mt-5 p-6 bg-gradient-to-r from-white to-emerald-50 rounded-xl border-3 border-emerald-500 shadow-xl">
@@ -460,7 +566,8 @@
                     this.currentExample = type;
 
                     // Priority: Load from JSON files for large datasets
-                    const jsonFiles = ['users', 'employees', 'products', 'transactions', 'apiLogs', 'config'];
+                    const jsonFiles = ['small', 'users', 'employees', 'products', 'transactions', 'apiLogs', 'config',
+                                       'ecommerce', 'api', 'logs', 'nested', 'analytics', 'timeseries', 'catalog', 'social', 'large'];
 
                     if (jsonFiles.includes(type)) {
                         try {
