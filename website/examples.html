@@ -219,9 +219,13 @@
                         <div class="flex items-center justify-between mb-3">
                             <div>
                                 <label class="text-sm font-semibold text-slate-700">Record Count</label>
-                                <p class="text-xs text-slate-500">Dynamically adjust array size (1-100)</p>
+                                <p class="text-xs text-slate-500">Adjust array size (1-<span x-text="maxRecordCount"></span> for this dataset)</p>
                             </div>
-                            <div class="text-xl font-bold text-blue-600" x-text="recordCount"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="text-xl font-bold text-blue-600" x-text="recordCount"></div>
+                                <span class="text-xs text-slate-400">/</span>
+                                <div class="text-sm font-medium text-slate-500" x-text="maxRecordCount"></div>
+                            </div>
                         </div>
 
                         <div class="space-y-3">
@@ -229,16 +233,16 @@
                                    x-model="recordCount"
                                    @input="updateRecordCount()"
                                    min="1"
-                                   max="100"
+                                   :max="maxRecordCount"
                                    step="1"
                                    class="w-full h-2 bg-gradient-to-r from-blue-200 to-blue-400 rounded-lg appearance-none cursor-pointer slider-thumb">
 
                             <div class="flex justify-between text-xs text-slate-400">
-                                <span>1 record</span>
-                                <span>10</span>
-                                <span>25</span>
-                                <span>50</span>
-                                <span>100 records</span>
+                                <span>1</span>
+                                <span x-text="Math.floor(maxRecordCount * 0.25)"></span>
+                                <span x-text="Math.floor(maxRecordCount * 0.5)"></span>
+                                <span x-text="Math.floor(maxRecordCount * 0.75)"></span>
+                                <span x-text="maxRecordCount"></span>
                             </div>
 
                             <div class="p-3 bg-blue-50 border border-blue-200 rounded-md">
@@ -348,6 +352,7 @@
                 copied: false,
                 includeTypes: false,
                 recordCount: 10,
+                maxRecordCount: 100,
                 currentExample: 'users',
                 fullDataCache: {},
 
@@ -1462,6 +1467,20 @@
                     try {
                         let limitedData = { ...fullData };
 
+                        // Find the largest array to determine max record count
+                        let maxArrayLength = 1;
+                        for (const key in fullData) {
+                            if (Array.isArray(fullData[key]) && fullData[key].length > 0) {
+                                maxArrayLength = Math.max(maxArrayLength, fullData[key].length);
+                            }
+                        }
+                        this.maxRecordCount = maxArrayLength;
+
+                        // Adjust recordCount if it exceeds max
+                        if (this.recordCount > this.maxRecordCount) {
+                            this.recordCount = this.maxRecordCount;
+                        }
+
                         // Find array fields and limit them
                         for (const key in limitedData) {
                             if (Array.isArray(limitedData[key]) && limitedData[key].length > 0) {
@@ -1534,9 +1553,9 @@
             <div class="border-t border-slate-800 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-slate-400">
                 <p>© 2025 TONL · MIT License</p>
                 <div class="flex items-center gap-3 mt-3 md:mt-0">
-                    <span>v1.0.5</span>
+                    <span>v1.0.6</span>
                     <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                    <span class="text-emerald-400">Production Ready</span>
+                    <span class="text-emerald-400">Enhanced Token Optimization</span>
                 </div>
             </div>
         </div>
