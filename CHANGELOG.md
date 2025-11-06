@@ -43,14 +43,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Decoder**: Skip fields marked with `-` instead of converting to `null`
 - **Type Inference**: Smart sampling finds first non-null value for type detection in semi-uniform arrays
 
+### Fixed
+- **Pretty Delimiter Spacing**: `--pretty` flag now correctly adds spaces around delimiters
+  - Format: `1,2,3` → `1 , 2 , 3` with `--pretty`
+  - Applies to: Tabular object arrays and primitive arrays
+  - Option: `prettyDelimiters` in `encodeTONL()` API
+  - Previously: Flag was parsed but not applied to output
+
 ### Performance
 - **Token Reduction**: 39.9% for API logs (2386 → 1433 tokens)
 - **Byte Reduction**: 34.8% for API logs (4858 → 3165 bytes)
 - **Round-trip**: 100% fidelity - decoded data exactly matches original
 
 ### Tests
-- **Status**: 494/496 tests passing (2 pre-existing format test failures)
-- **New Coverage**: Semi-uniform array encoding/decoding, missing field marker handling
+- **Status**: 496/496 tests passing (100% pass rate) ✅
+- **New Coverage**: Semi-uniform array encoding/decoding, missing field marker handling, pretty delimiter spacing
 - **Verified**: Perfect round-trip for `apiLogs.json` benchmark file
 
 ## [1.0.5] - 2025-11-06

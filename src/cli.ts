@@ -284,7 +284,8 @@ async function main() {
           includeTypes: options.includeTypes,
           version: options.version,
           indent: options.indent || 2,
-          singleLinePrimitiveLists: true
+          singleLinePrimitiveLists: true,
+          prettyDelimiters: options.pretty
         });
 
         if (options.out) {

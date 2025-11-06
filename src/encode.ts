@@ -16,6 +16,7 @@ export function encodeTONL(input: any, opts: {
   version?: string;
   indent?: number;
   singleLinePrimitiveLists?: boolean;
+  prettyDelimiters?: boolean;
 } = {}): string {
   const delimiter = opts.delimiter || ",";
   const includeTypes = opts.includeTypes ?? false;
@@ -23,6 +24,7 @@ export function encodeTONL(input: any, opts: {
   // BUGFIX: Validate indent is a valid number, default to 2 if NaN
   const indent = (opts.indent !== undefined && Number.isFinite(opts.indent) && opts.indent >= 0) ? opts.indent : 2;
   const singleLinePrimitiveLists = opts.singleLinePrimitiveLists ?? true;
+  const prettyDelimiters = opts.prettyDelimiters ?? false;
 
   const context: TONLEncodeContext = {
     delimiter,
@@ -30,6 +32,7 @@ export function encodeTONL(input: any, opts: {
     version,
     indent,
     singleLinePrimitiveLists,
+    prettyDelimiters,
     currentIndent: 0,
     seen: new WeakSet()
   };
@@ -248,7 +251,8 @@ function encodeArray(arr: TONLArray, key: string, context: TONLEncodeContext): s
             rowValues.push(quoted);
           }
         }
-        lines.push(makeIndent(childContext.currentIndent, childContext.indent) + rowValues.join(context.delimiter));
+        const separator = context.prettyDelimiters ? ` ${context.delimiter} ` : context.delimiter;
+        lines.push(makeIndent(childContext.currentIndent, childContext.indent) + rowValues.join(separator));
       }
 
       return lines.join("\n");
@@ -297,14 +301,16 @@ function encodeArray(arr: TONLArray, key: string, context: TONLEncodeContext): s
       }
     });
 
-    if (context.singleLinePrimitiveLists && values.join(context.delimiter).length < 80) {
+    const separator = context.prettyDelimiters ? ` ${context.delimiter} ` : context.delimiter;
+
+    if (context.singleLinePrimitiveLists && values.join(separator).length < 80) {
       // Single line for short primitive arrays
-      return `${key}[${arr.length}]: ${values.join(context.delimiter)}`;
+      return `${key}[${arr.length}]: ${values.join(separator)}`;
     } else {
       // Multi-line for longer arrays
       const lines: string[] = [`${key}[${arr.length}]:`];
       const childContext = { ...context, currentIndent: context.currentIndent + 1 };
-      lines.push(makeIndent(childContext.currentIndent, childContext.indent) + values.join(context.delimiter));
+      lines.push(makeIndent(childContext.currentIndent, childContext.indent) + values.join(separator));
       return lines.join("\n");
     }
   } else {

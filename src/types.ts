@@ -23,6 +23,7 @@ export interface EncodeOptions {
   version?: string;           // default "1.0"
   indent?: number;            // spaces per level, default 2
   singleLinePrimitiveLists?: boolean; // default true
+  prettyDelimiters?: boolean; // add spaces around delimiters (e.g., "1 , 2" instead of "1,2")
 }
 
 export interface DecodeOptions {
@@ -61,6 +62,7 @@ export interface TONLEncodeContext {
   version: string;
   indent: number;
   singleLinePrimitiveLists: boolean;
+  prettyDelimiters: boolean;
   currentIndent: number;
   seen?: WeakSet<object>;  // Track circular references
 }
