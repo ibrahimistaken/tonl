@@ -46,14 +46,42 @@ export function parseContent(content: string, context: TONLParseContext): TONLOb
         for (const colPart of colParts) {
           const trimmedCol = colPart.trim();
           if (!trimmedCol) continue;
-          const colonIndex = trimmedCol.indexOf(':');
-          if (colonIndex > 0) {
+
+          // Handle quoted column names
+          let columnName: string;
+          let typeHint: string | undefined;
+
+          if (trimmedCol.startsWith('"')) {
+            // Find the end of the quoted name
+            const endQuoteIndex = trimmedCol.indexOf('"', 1);
+            if (endQuoteIndex > 0) {
+              columnName = trimmedCol.slice(1, endQuoteIndex).replace(/""/g, '"');
+              const remainder = trimmedCol.slice(endQuoteIndex + 1);
+              const colonIndex = remainder.indexOf(':');
+              if (colonIndex >= 0) {
+                typeHint = remainder.slice(colonIndex + 1).trim();
+              }
+            } else {
+              columnName = trimmedCol;
+            }
+          } else {
+            // Unquoted column name - find first colon for type hint
+            const colonIndex = trimmedCol.indexOf(':');
+            if (colonIndex > 0) {
+              columnName = trimmedCol.slice(0, colonIndex).trim();
+              typeHint = trimmedCol.slice(colonIndex + 1).trim();
+            } else {
+              columnName = trimmedCol;
+            }
+          }
+
+          if (typeHint) {
             columns.push({
-              name: trimmedCol.slice(0, colonIndex).trim(),
-              type: trimmedCol.slice(colonIndex + 1).trim() as any
+              name: columnName,
+              type: typeHint as any
             });
           } else {
-            columns.push({ name: trimmedCol });
+            columns.push({ name: columnName });
           }
         }
       }
@@ -100,10 +128,35 @@ export function parseContent(content: string, context: TONLParseContext): TONLOb
       }
 
       // Simple key-value pair
-      const kvMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
+      const kvMatch = trimmed.match(/^([^:]+):\s*(.*)$/);
       if (kvMatch) {
         const key = kvMatch[1].trim();
-        const rawValue = kvMatch[2].trim();
+        let rawValue = kvMatch[2].trim();
+
+        // Check if this is the start of a multi-line triple-quoted string
+        if (rawValue.startsWith('"""')) {
+          // Check if it ends on the same line
+          const afterTripleQuote = rawValue.slice(3);
+          const closingIndex = afterTripleQuote.indexOf('"""');
+
+          if (closingIndex === -1) {
+            // Multi-line triple-quoted string - continue reading lines
+            let fullValue = rawValue;
+            i++;
+            while (i < lines.length) {
+              const nextLine = lines[i];
+              fullValue += '\n' + nextLine;
+
+              // Check if this line contains the closing """
+              if (nextLine.includes('"""')) {
+                break;
+              }
+              i++;
+            }
+            rawValue = fullValue.trim();
+          }
+        }
+
         result[key] = parsePrimitiveValue(rawValue, context);
       }
       i++;

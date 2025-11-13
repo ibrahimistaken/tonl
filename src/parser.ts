@@ -67,9 +67,17 @@ export function parseTONLLine(line: string, delimiter: TONLDelimiter = ","): str
         break;
 
       case "inQuote":
-        if (char === '"') {
+        if (char === '\\' && nextChar !== undefined) {
+          // Backslash escape - check for escaped quote or backslash
+          if (nextChar === '"' || nextChar === '\\') {
+            state.currentField += nextChar;
+            state.i++; // Skip the escaped character
+          } else {
+            state.currentField += char;
+          }
+        } else if (char === '"') {
           if (nextChar === '"') {
-            // Doubled quote = literal quote
+            // Doubled quote = literal quote (backward compatibility)
             state.currentField += '"';
             state.i++; // Skip the second quote
           } else {
@@ -179,14 +187,41 @@ export function parseObjectHeader(line: string): TONLObjectHeader | null {
       const trimmed = colPart.trim();
       if (!trimmed) continue;
 
-      const colonIndex = trimmed.indexOf(':');
-      if (colonIndex > 0) {
+      // Handle quoted column names
+      let columnName: string;
+      let typeHint: string | undefined;
+
+      if (trimmed.startsWith('"')) {
+        // Find the end of the quoted name
+        const endQuoteIndex = trimmed.indexOf('"', 1);
+        if (endQuoteIndex > 0) {
+          columnName = trimmed.slice(1, endQuoteIndex).replace(/""/g, '"');
+          const remainder = trimmed.slice(endQuoteIndex + 1);
+          const colonIndex = remainder.indexOf(':');
+          if (colonIndex >= 0) {
+            typeHint = remainder.slice(colonIndex + 1).trim();
+          }
+        } else {
+          columnName = trimmed;
+        }
+      } else {
+        // Unquoted column name - find first colon for type hint
+        const colonIndex = trimmed.indexOf(':');
+        if (colonIndex > 0) {
+          columnName = trimmed.slice(0, colonIndex).trim();
+          typeHint = trimmed.slice(colonIndex + 1).trim();
+        } else {
+          columnName = trimmed;
+        }
+      }
+
+      if (typeHint) {
         columns.push({
-          name: trimmed.slice(0, colonIndex).trim(),
-          type: trimmed.slice(colonIndex + 1).trim() as any
+          name: columnName,
+          type: typeHint as any
         });
       } else {
-        columns.push({ name: trimmed });
+        columns.push({ name: columnName });
       }
     }
   }

@@ -164,8 +164,8 @@ describe("parseObjectHeader", () => {
       key: "data",
       isArray: false,
       columns: [
-        { name: '"name with spaces"', type: "str" },
-        { name: '"normal"', type: "name" }
+        { name: 'name with spaces', type: "str" },
+        { name: 'normal', type: "name" }
       ]
     };
     // Remove undefined properties from result before comparison
