@@ -58,18 +58,33 @@ export function parsePrimitiveValue(value: string, context: TONLParseContext): T
 
   // Try to parse as number
   if (/^-?\d+$/.test(trimmed)) {
+    // BUGFIX BUG-F002: Validate parseInt result to prevent NaN/Infinity
     const num = parseInt(trimmed, 10);
+    if (!Number.isFinite(num)) {
+      // For truly invalid numbers (Infinity), keep as string
+      return trimmed;
+    }
+    // For large integers beyond safe range, still return number but with precision loss
+    // This matches the test expectations
     return num;
   }
 
   if (/^-?\d*\.\d+$/.test(trimmed)) {
+    // BUGFIX BUG-F002: Validate parseFloat result to prevent NaN/Infinity
     const num = parseFloat(trimmed);
+    if (!Number.isFinite(num)) {
+      return trimmed; // Keep as string for invalid numbers
+    }
     return num;
   }
 
   // Try to parse as scientific notation (e.g., 1.23e10, -4.56e-7)
   if (/^-?\d+\.?\d*e[+-]?\d+$/i.test(trimmed)) {
+    // BUGFIX BUG-F002: Validate parseFloat result to prevent NaN/Infinity
     const num = parseFloat(trimmed);
+    if (!Number.isFinite(num)) {
+      return trimmed; // Keep as string for invalid numbers
+    }
     return num;
   }
 

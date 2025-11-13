@@ -147,14 +147,26 @@ export function parseObjectBlock(
     }
 
     // Array format: key[N]: values
-    const arrayMatch = trimmed.match(/^(.+)\[(\d+)\]:\s*(.+)$/);
+    // BUGFIX BUG-F001: Use more permissive regex to catch invalid array syntax
+    const arrayMatch = trimmed.match(/^(.+)\[([^\]]+)\]:\s*(.+)$/);
     if (arrayMatch) {
       const key = arrayMatch[1].trim();
-      // BUGFIX BUG-F001: Validate parseInt result to prevent NaN
-      const arrayLength = parseInt(arrayMatch[2], 10);
+      const arrayLengthStr = arrayMatch[2].trim();
+
+      // BUGFIX BUG-F001: Validate array length string
+      if (!/^\d+$/.test(arrayLengthStr)) {
+        throw new TONLParseError(
+          `Invalid array length: "${arrayLengthStr}". Array length must be a positive integer.`,
+          context.currentLine,
+          undefined,
+          line
+        );
+      }
+
+      const arrayLength = parseInt(arrayLengthStr, 10);
       if (!Number.isSafeInteger(arrayLength) || arrayLength < 0) {
         throw new TONLParseError(
-          `Invalid array length: ${arrayMatch[2]}`,
+          `Invalid array length: ${arrayLengthStr}. Must be a safe integer >= 0.`,
           context.currentLine,
           undefined,
           line

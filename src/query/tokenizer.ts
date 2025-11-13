@@ -106,8 +106,8 @@ export function tokenize(input: string): Token[] {
     const start = position;
     let value = '';
 
-    // Handle negative sign
-    if (peek() === '-') {
+    // Handle sign
+    if (peek() === '-' || peek() === '+') {
       value += consume();
     }
 
@@ -132,9 +132,42 @@ export function tokenize(input: string): Token[] {
       }
     }
 
+    // Handle scientific notation (e/E followed by sign and digits)
+    if (peek() === 'e' || peek() === 'E') {
+      value += consume(); // consume 'e' or 'E'
+
+      // Optional sign in exponent
+      if (peek() === '+' || peek() === '-') {
+        value += consume();
+      }
+
+      // At least one digit required in exponent
+      if (!/\d/.test(peek() || '')) {
+        throw new ParseError(
+          `Expected digit in exponent at position ${position}`,
+          context,
+          position
+        );
+      }
+
+      while (position < input.length && /\d/.test(input[position])) {
+        value += input[position++];
+      }
+    }
+
+    // BUGFIX BUG-F003: Validate parseFloat result to prevent NaN/Infinity
+    const numValue = parseFloat(value);
+    if (!Number.isFinite(numValue)) {
+      throw new ParseError(
+        `Invalid number value: ${value}`,
+        context,
+        start
+      );
+    }
+
     return {
       type: TokenType.NUMBER,
-      value: parseFloat(value),
+      value: numValue,
       position: start,
       length: value.length
     };
