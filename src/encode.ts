@@ -104,10 +104,19 @@ function encodeObject(obj: TONLObject, key: string, context: TONLEncodeContext):
     typeof v === "object" && v !== null && !Array.isArray(v)
   );
 
+  // Check if any keys contain special characters that require quoting
+  const hasSpecialKeys = keys.some(k =>
+    k.includes(':') || k.includes(',') || k.includes('{') || k.includes('}') || k.includes('"')
+  );
+
   // Build column definitions
   for (const k of keys) {
     const value = obj[k];
+    // Quote column name if it contains special characters (colon, comma, braces, quotes)
     let col = k;
+    if (k.includes(':') || k.includes(',') || k.includes('{') || k.includes('}') || k.includes('"')) {
+      col = `"${k.replace(/"/g, '""')}"`;
+    }
     if (context.includeTypes) {
       const type = inferPrimitiveType(value);
       if (type !== "obj" && type !== "list") {
@@ -119,30 +128,35 @@ function encodeObject(obj: TONLObject, key: string, context: TONLEncodeContext):
 
   const header = `${key}{${columns.join(",")}}:`;
 
-  // If object has nested objects, arrays, or multiline strings, render as multi-line block
+  // If object has nested objects, arrays, multiline strings, or special keys, render as multi-line block
   const hasMultilineStrings = Object.values(obj).some(v =>
     typeof v === "string" && v.includes("\n")
   );
 
-  if (hasNestedObjects || Object.values(obj).some(v => Array.isArray(v)) || hasMultilineStrings) {
+  if (hasNestedObjects || Object.values(obj).some(v => Array.isArray(v)) || hasMultilineStrings || hasSpecialKeys) {
     const lines: string[] = [header];
     const childContext = { ...context, currentIndent: context.currentIndent + 1 };
 
     for (const k of keys) {
       const value = obj[k];
+      // Quote key name if it contains special characters (colon, comma, braces, quotes)
+      const keyName = (k.includes(':') || k.includes(',') || k.includes('{') || k.includes('}') || k.includes('"'))
+        ? `"${k.replace(/"/g, '\\"')}"`
+        : k;
+
       if (Array.isArray(value) || (typeof value === "object" && value !== null)) {
         const childLine = encodeValue(value, k, childContext);
         lines.push(makeIndent(childContext.currentIndent, childContext.indent) + childLine);
       } else {
         if (value === null) {
-          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${k}: null`);
+          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${keyName}: null`);
         } else if (value === true || value === false) {
-          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${k}: ${String(value)}`);
+          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${keyName}: ${String(value)}`);
         } else if (typeof value === 'number') {
-          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${k}: ${String(value)}`);
+          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${keyName}: ${String(value)}`);
         } else if (value !== undefined) {
           const quoted = tripleQuoteIfNeeded(String(value), context.delimiter);
-          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${k}: ${quoted}`);
+          lines.push(makeIndent(childContext.currentIndent, childContext.indent) + `${keyName}: ${quoted}`);
         }
         // undefined values are already filtered out from keys
       }
@@ -206,7 +220,11 @@ function encodeArray(arr: TONLArray, key: string, context: TONLEncodeContext): s
 
       // For type inference with semi-uniform arrays, we need to check all items
       for (const col of columns) {
+        // Quote column name if it contains special characters (colon, comma, braces, quotes)
         let colDef = col;
+        if (col.includes(':') || col.includes(',') || col.includes('{') || col.includes('}') || col.includes('"')) {
+          colDef = `"${col.replace(/"/g, '""')}"`;
+        }
         if (context.includeTypes) {
           // Find the first non-null, non-undefined value for this column
           let sampleValue = null;

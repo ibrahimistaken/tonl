@@ -101,7 +101,7 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.19.25",
     "rimraf": "^6.0.1",
     "stream-browserify": "^3.0.0",
     "terser": "^5.44.0",

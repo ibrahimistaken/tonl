@@ -30,6 +30,7 @@ export function needsQuoting(value: string, delimiter: TONLDelimiter): boolean {
          value.includes('{') ||
          value.includes('}') ||
          value.includes('#') ||
+         value.includes('"') ||       // Quote characters need quoting
          value.includes('\n') ||
          value.includes('\t') ||      // Tab characters need quoting
          value.includes('\r') ||      // Carriage return needs quoting
@@ -42,19 +43,38 @@ export function needsQuoting(value: string, delimiter: TONLDelimiter): boolean {
  */
 export function quoteIfNeeded(value: string, delimiter: TONLDelimiter): string {
   if (needsQuoting(value, delimiter)) {
-    // Escape existing quotes by doubling them and escape backslashes
-    return `"${value.replace(/"/g, '""').replace(/\\/g, '\\\\')}"`;
+    // Escape backslashes first, then escape quotes with backslash
+    // This avoids ambiguity with triple-quoted strings
+    return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
   }
   return value;
 }
 
 /**
- * Unquote a value, handling doubled quotes and escaped backslashes
+ * Unquote a value, handling backslash-escaped quotes and backslashes
  */
 export function unquote(value: string): string {
   if (value.startsWith('"') && value.endsWith('"')) {
-    // Remove outer quotes and unescape doubled quotes and backslashes
-    return value.slice(1, -1).replace(/""/g, '"').replace(/\\\\/g, '\\');
+    // Remove outer quotes and unescape backslash-escaped characters
+    const inner = value.slice(1, -1);
+    let result = '';
+    let i = 0;
+    while (i < inner.length) {
+      if (inner[i] === '\\' && i + 1 < inner.length) {
+        const nextChar = inner[i + 1];
+        if (nextChar === '\\' || nextChar === '"') {
+          result += nextChar;
+          i += 2;
+        } else {
+          result += inner[i];
+          i++;
+        }
+      } else {
+        result += inner[i];
+        i++;
+      }
+    }
+    return result;
   }
   return value;
 }

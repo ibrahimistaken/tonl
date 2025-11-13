@@ -178,10 +178,43 @@ export function parseObjectBlock(
     }
 
     // Simple key-value pair
-    const kvMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
-    if (kvMatch) {
-      const key = kvMatch[1].trim();
-      const rawValue = kvMatch[2].trim();
+    // Need to handle quoted keys that may contain colons
+    let key: string | null = null;
+    let rawValue: string | null = null;
+
+    if (trimmed.startsWith('"')) {
+      // Quoted key - find the closing quote
+      let i = 1;
+      let keyStr = '';
+      while (i < trimmed.length) {
+        if (trimmed[i] === '\\' && i + 1 < trimmed.length && (trimmed[i + 1] === '"' || trimmed[i + 1] === '\\')) {
+          keyStr += trimmed[i + 1];
+          i += 2;
+        } else if (trimmed[i] === '"') {
+          // Found closing quote
+          key = keyStr;
+          // Skip past the colon and whitespace
+          i++;
+          while (i < trimmed.length && (trimmed[i] === ':' || trimmed[i] === ' ')) {
+            i++;
+          }
+          rawValue = trimmed.slice(i).trim();
+          break;
+        } else {
+          keyStr += trimmed[i];
+          i++;
+        }
+      }
+    } else {
+      // Unquoted key - find first colon
+      const kvMatch = trimmed.match(/^([^:]+):\s*(.+)$/);
+      if (kvMatch) {
+        key = kvMatch[1].trim();
+        rawValue = kvMatch[2].trim();
+      }
+    }
+
+    if (key !== null && rawValue !== null) {
 
       // Multiline triple-quoted string
       if (rawValue.startsWith('"""')) {
