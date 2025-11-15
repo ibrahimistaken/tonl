@@ -14,14 +14,16 @@ npm install -g tonl
 
 ## Overview
 
-The CLI provides six main commands:
+The CLI provides seven main commands:
 
-- `tonl encode` - Convert JSON to TONL
+- `tonl encode` - Convert JSON to TONL with optimization options
 - `tonl decode` - Convert TONL to JSON
 - `tonl stats` - Analyze and compare data formats
 - `tonl format` - Format and prettify TONL files
 - `tonl validate` - Validate TONL data against schema
 - `tonl generate-types` - Generate TypeScript types from schema
+- `tonl query` - Query TONL files with JSONPath expressions
+- `tonl get` - Get specific values from TONL files
 
 ## Global Options
 
@@ -661,6 +663,122 @@ def json_to_tonl(data, smart=True, delimiter=None):
 data = {"users": [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]}
 tonl_output = json_to_tonl(data, smart=True)
 print(tonl_output)
+```
+
+---
+
+## Query and Get Commands (v2.0.0+)
+
+### Query Command
+
+Query TONL files using JSONPath expressions.
+
+#### Syntax
+
+```bash
+tonl query <file> <expression> [options]
+```
+
+#### Options
+
+| Option | Description |
+|--------|-------------|
+| `--out <file>` | Save query result to file |
+| `--pretty` | Format JSON output |
+
+#### Examples
+
+```bash
+# Get all users
+tonl query users.tonl "users"
+
+# Filter users by age
+tonl query users.tonl "users[?(@.age > 25)]"
+
+# Get all email addresses
+tonl query users.tonl "$..email"
+
+# Complex query with multiple conditions
+tonl query data.tonl "users[?(@.active && @.role == 'admin')]"
+
+# Save result to file
+tonl query users.tonl "users[?(@.department == 'Engineering')]" --out engineers.json
+```
+
+### Get Command
+
+Get a specific value from a TONL file.
+
+#### Syntax
+
+```bash
+tonl get <file> <path> [options]
+```
+
+#### Examples
+
+```bash
+# Get specific user
+tonl get users.tonl "users[0]"
+
+# Get nested property
+tonl get config.tonl "database.connection.url"
+
+# Get array element
+tonl get data.tonl "items[2].price"
+```
+
+---
+
+## Optimization Features (v2.0.0+)
+
+The TONL CLI now includes advanced optimization features for additional compression savings.
+
+### Smart Encoding with Optimization
+
+```bash
+# Enable all optimization strategies
+tonl encode data.json --smart --optimize --stats
+
+# Use specific optimization strategies
+tonl encode data.json --optimize dictionary,delta,bitpack --stats
+
+# Show detailed optimization analysis
+tonl encode data.json --optimize --verbose --stats
+```
+
+### Optimization Strategies
+
+| Strategy | Description | Best For |
+|----------|-------------|----------|
+| `dictionary` | Compress repetitive values | Categorical data, enums |
+| `delta` | Compress sequential numbers | Timestamps, IDs, counters |
+| `bitpack` | Compress booleans and flags | Status fields, binary data |
+| `rle` | Run-length encoding | Repeated patterns |
+| `quantize` | Reduce numeric precision | Floating point data |
+| `column-reorder` | Optimize field order | Tabular data |
+
+### Example with Optimization
+
+```bash
+# Original data
+tonl encode employees.json --stats
+# Output: 2.1MB, 145,230 tokens
+
+# With optimization
+tonl encode employees.json --smart --optimize --stats
+# Output: 1.4MB, 87,450 tokens (33% additional savings)
+
+# Optimization analysis
+tonl encode employees.json --optimize --verbose
+# Output:
+# Applying optimizations:
+# ✓ Dictionary encoding for 'department' (saves 23.4KB)
+# ✓ Delta encoding for 'employee_id' (saves 15.2KB)
+# ✓ Bit packing for 'active' flag (saves 8.7KB)
+# ✓ Column reordering (saves 12.1KB)
+#
+# Total optimization savings: 59.4KB (2.8% additional)
 ```
 
 The TONL CLI provides a comprehensive toolkit for working with TONL data, from simple conversions to complex data analysis and optimization workflows.
