@@ -8,13 +8,14 @@
 
 **TONL** is a production-ready data platform that combines compact serialization with powerful query, modification, indexing, and streaming capabilities. Designed for LLM token efficiency while providing a rich API for data access and manipulation.
 
-**🎉 v2.0.2 - Critical Bug Fixes & Security Enhancements**
+**🎉 v2.0.3 - CLI Enhancement Release**
 
-**✨ What's New in v2.0.2:**
-- 🔒 All data integrity issues fixed (100% test success rate)
-- 🛠️ Numeric precision protection for large integers
-- 🔧 Enhanced type coercion validation and error handling
-- 📦 Production-ready stability and security
+**✨ What's New in v2.0.3:**
+- 🛠️ Smart JSON preprocessing for problematic characters (`#`, `@`, `""`, etc.)
+- 👥 User-friendly CLI - shows help when no arguments provided
+- 🔧 Enhanced version command (`tonl --version` works without file)
+- 🔄 Perfect round-trip conversion for previously problematic JSON
+- 📦 Zero breaking changes - fully backward compatible
 
 [![npm version](https://badge.fury.io/js/tonl.svg)](https://www.npmjs.com/package/tonl)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -31,7 +32,7 @@
 🗜️ **Up to 60% Smaller** - Reduce JSON size and LLM token costs
 👁️ **Human-Readable** - Clear text format, not binary
 🚀 **Blazingly Fast** - 10-1600x faster than targets
-🔒 **Production Secure** - 100% security hardened (v2.0.2)
+🔒 **Production Secure** - 100% security hardened (v2.0.3)
 🛠️ **TypeScript-First** - Full type safety & IntelliSense
 📦 **Zero Dependencies** - Pure TypeScript, no bloat
 🌐 **Browser Ready** - 10.5 KB gzipped bundle (IIFE/UMD)
@@ -108,7 +109,13 @@ const compressed = delta.encode(timestamps, 'timestamp');
 ### CLI Usage
 
 ```bash
-# Encode JSON to TONL
+# Get started (shows help)
+tonl
+
+# Version info
+tonl --version
+
+# Encode JSON to TONL (auto-processes problematic keys)
 tonl encode data.json --out data.tonl --smart --stats
 
 # Decode TONL to JSON
@@ -339,7 +346,7 @@ logs[1000]{timestamp:i64,level:str,message:str,metadata:obj}:
 ### ESM (Modern Browsers)
 ```html
 <script type="module">
-  import { encodeTONL, decodeTONL } from 'https://cdn.jsdelivr.net/npm/tonl@2.0.2/+esm';
+  import { encodeTONL, decodeTONL } from 'https://cdn.jsdelivr.net/npm/tonl@2.0.3/+esm';
 
   const data = { users: [{ id: 1, name: "Alice" }] };
   const tonl = encodeTONL(data);
@@ -349,7 +356,7 @@ logs[1000]{timestamp:i64,level:str,message:str,metadata:obj}:
 
 ### UMD (Universal)
 ```html
-<script src="https://unpkg.com/tonl@2.0.2/dist/browser/tonl.umd.js"></script>
+<script src="https://unpkg.com/tonl@2.0.3/dist/browser/tonl.umd.js"></script>
 <script>
   const tonl = TONL.encodeTONL({ hello: "world" });
   console.log(tonl);
