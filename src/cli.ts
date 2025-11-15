@@ -4,12 +4,12 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { encodeTONL, decodeTONL, encodeSmart } from "./index.js";
-import { estimateTokens } from "./utils/metrics.js";
-import { parseSchema, validateTONL, generateTypeScript } from "./schema/index.js";
-import { PathValidator } from "./cli/path-validator.js";
-import { QuerySanitizer } from "./cli/query-sanitizer.js";
-import { SecurityError } from "./errors/index.js";
+import { encodeTONL, decodeTONL, encodeSmart } from "./index";
+import { estimateTokens } from "./utils/metrics";
+import { parseSchema, validateTONL, generateTypeScript } from "./schema/index";
+import { PathValidator } from "./cli/path-validator";
+import { QuerySanitizer } from "./cli/query-sanitizer";
+import { SecurityError } from "./errors/index";
 
 /**
  * Safe file read with path validation
@@ -56,6 +56,8 @@ interface CLIOptions {
   strict?: boolean;
   pretty?: boolean;
   schema?: string;
+  optimize?: boolean;
+  verbose?: boolean;
   tokenizer?: "gpt-5" | "gpt-4.5" | "gpt-4o" | "claude-3.5" | "gemini-2.0" | "llama-4" | "o200k" | "cl100k";
 }
 
@@ -114,6 +116,12 @@ function parseArgs(args: string[]): { command: string; file: string; options: CL
         break;
       case "--stats":
         options.stats = true;
+        break;
+      case "--optimize":
+        options.optimize = true;
+        break;
+      case "--verbose":
+        options.verbose = true;
         break;
       case "--strict":
         options.strict = true;
@@ -191,16 +199,60 @@ async function main() {
 
     switch (command) {
       case "encode": {
-        const encodeFunc = options.smart ? encodeSmart : encodeTONL;
-
+        let tonlOutput: string;
         const jsonData = JSON.parse(input);
-        const tonlOutput = encodeFunc(jsonData, {
-          delimiter: options.delimiter,
-          includeTypes: options.includeTypes,
-          version: options.version,
-          indent: options.indent,
-          singleLinePrimitiveLists: true
-        });
+
+        if (options.optimize) {
+          // Use optimization
+          console.log('🚀 Applying advanced optimization...');
+
+          // Dynamically import optimization module
+          const { AdaptiveOptimizer } = await import('./optimization');
+          const optimizer = new AdaptiveOptimizer();
+
+          const optimizationResult = optimizer.optimize(jsonData);
+
+          // Build TONL with directives
+          const directives = optimizationResult.directives.join('\n') + '\n';
+          const baseTONL = encodeSmart(optimizationResult.optimizedData, {
+            delimiter: options.delimiter,
+            includeTypes: options.includeTypes,
+            version: options.version,
+            indent: options.indent,
+            singleLinePrimitiveLists: true
+          });
+
+          tonlOutput = directives + baseTONL;
+
+          if (options.verbose) {
+            console.log('\n📊 Optimization Analysis:');
+            console.log(`Recommended strategies: ${optimizationResult.analysis.recommendedStrategies.join(', ')}`);
+            console.log(`Estimated savings: ${optimizationResult.analysis.estimatedSavings}%`);
+            console.log(`Applied optimizations: ${optimizationResult.directives.length}`);
+
+            if (optimizationResult.analysis.warnings.length > 0) {
+              console.log('\n⚠️  Warnings:');
+              optimizationResult.analysis.warnings.forEach((warning: any) => {
+                console.log(`  • ${warning}`);
+              });
+            }
+
+            console.log('\n🔧 Optimization Details:');
+            optimizationResult.analysis.appliedOptimizations.forEach((detail: any) => {
+              console.log(`  • ${detail}`);
+            });
+          }
+        } else {
+          // Use regular encoding
+          const encodeFunc = options.smart ? encodeSmart : encodeTONL;
+          tonlOutput = encodeFunc(jsonData, {
+            delimiter: options.delimiter,
+            includeTypes: options.includeTypes,
+            version: options.version,
+            indent: options.indent,
+            singleLinePrimitiveLists: true
+          });
+        }
 
         if (options.out) {
           safeWriteFile(options.out, tonlOutput);
@@ -427,7 +479,7 @@ async function main() {
         // SECURITY FIX (BF007): Wrap async import in try-catch
         let TONLDocument;
         try {
-          const module = await import('./document.js');
+          const module = await import('./document');
           TONLDocument = module.TONLDocument;
         } catch (error) {
           console.error('❌ Failed to load document module:', error);
@@ -482,6 +534,8 @@ Options:
   --indent <number>      Indentation spaces (default: 2)
   --smart               Use smart encoding (auto-optimize)
   --stats               Show compression statistics
+  --optimize            Apply advanced optimization strategies
+  --verbose             Show detailed optimization analysis
   --strict              Enable strict parsing mode
   --pretty              Format with proper indentation (for format command)
   --schema <file>       Schema file for validation (.schema.tonl)
@@ -489,6 +543,8 @@ Options:
 
 Examples:
   tonl encode data.json --out data.tonl --smart --stats
+  tonl encode data.json --optimize --stats --verbose
+  tonl encode data.json --optimize dictionary,delta,bitpack
   tonl decode data.tonl --out data.json --strict
   tonl stats data.json --tokenizer gpt-5
   tonl format data.tonl --pretty --out formatted.tonl

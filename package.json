@@ -41,6 +41,10 @@
       "types": "./dist/query/index.d.ts",
       "import": "./dist/query/index.js"
     },
+    "./optimization": {
+      "types": "./dist/optimization/index.d.ts",
+      "import": "./dist/optimization/index.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "dist/index.js",
@@ -49,7 +53,7 @@
     "tonl": "dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node fix-imports.js",
     "build:browser": "vite build && node scripts/copy-browser-build.js",
     "build:all": "npm run build && npm run build:browser",
     "test": "npm run build && node --test test/edge-cases.test.ts test/encode_decode_roundtrip.test.ts test/integration.test.ts test/navigation.test.ts test/parser.test.ts test/tonl-document.test.ts test/comprehensive.test.ts test/schema.test.ts test/stream.test.ts test/modification-setter.test.ts test/format.test.ts test/modification-complete.test.ts test/query-evaluator.test.ts test/query-filter.test.ts test/query-path-parser.test.ts test/schema-constraints.test.ts test/integration/query-integration.test.ts",

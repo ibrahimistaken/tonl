@@ -3,6 +3,8 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "node",
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
     "outDir": "./dist",
     "strict": true,
     "noImplicitAny": true,
