@@ -40,7 +40,7 @@ Thank you for your interest in contributing to TONL (Token-Optimized Notation La
 ## 🚀 How to Contribute
 
 ### Reporting Issues
-- Use the [GitHub Issues](https://github.com/ersinkoc/tonl/issues) page
+- Use the [GitHub Issues](https://github.com/tonl-dev/tonl/issues) page
 - Search existing issues before creating a new one
 - Use the provided issue templates
 - Provide clear, reproducible bug reports
@@ -199,7 +199,7 @@ For new features:
 
 ## 🎯 Areas for Contribution
 
-> 💡 **Looking for your first contribution?** Check issues labeled [`good first issue`](https://github.com/ersinkoc/tonl/labels/good%20first%20issue) or [`help wanted`](https://github.com/ersinkoc/tonl/labels/help%20wanted)
+> 💡 **Looking for your first contribution?** Check issues labeled [`good first issue`](https://github.com/tonl-dev/tonl/labels/good%20first%20issue) or [`help wanted`](https://github.com/tonl-dev/tonl/labels/help%20wanted)
 
 ### 🔴 Critical Priority (v0.4.0 - Next 3 Months)
 
@@ -383,8 +383,8 @@ Contributors are recognized in:
 
 ## 📞 Questions?
 
-- **Issues**: [GitHub Issues](https://github.com/ersinkoc/tonl/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ersinkoc/tonl/discussions)
-- **Repository**: [github.com/ersinkoc/tonl](https://github.com/ersinkoc/tonl)
+- **Issues**: [GitHub Issues](https://github.com/tonl-dev/tonl/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/tonl-dev/tonl/discussions)
+- **Repository**: [github.com/tonl-dev/tonl](https://github.com/tonl-dev/tonl)
 
 Thank you for contributing to TONL! 🚀

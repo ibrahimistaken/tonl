@@ -626,7 +626,7 @@ Settings: obj
 
 **Document Version:** 1.0 (Draft)
 **Status:** Design Phase
-**Feedback**: [GitHub Discussions](https://github.com/ersinkoc/tonl/discussions)
+**Feedback**: [GitHub Discussions](https://github.com/tonl-dev/tonl/discussions)
 
 ---
 

@@ -195,7 +195,7 @@ This extension currently has no configurable settings. Future versions may inclu
 
 ## Contributing
 
-See the main TONL repository: https://github.com/ersinkoc/tonl
+See the main TONL repository: https://github.com/tonl-dev/tonl
 
 ## License
 

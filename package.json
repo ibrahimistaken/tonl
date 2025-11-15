@@ -2,13 +2,13 @@
   "name": "tonl",
   "version": "2.0.0",
   "description": "Token-Optimized Notation Language - A text-first, LLM-friendly serialization format with schema validation, streaming, and browser support (Security Hardened)",
-  "homepage": "https://github.com/ersinkoc/tonl",
+  "homepage": "https://github.com/tonl-dev/tonl",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ersinkoc/tonl.git"
+    "url": "git+https://github.com/tonl-dev/tonl.git"
   },
   "bugs": {
-    "url": "https://github.com/ersinkoc/tonl/issues"
+    "url": "https://github.com/tonl-dev/tonl/issues"
   },
   "files": [
     "dist/**/*.js",

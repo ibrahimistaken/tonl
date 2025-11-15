@@ -2392,7 +2392,7 @@ public class TONLDecoder {
 ## Reference Implementation (TypeScript)
 
 The reference implementation is available at:
-- **GitHub:** https://github.com/ersinkoc/tonl
+- **GitHub:** https://github.com/tonl-dev/tonl
 - **NPM:** https://www.npmjs.com/package/tonl
 - **Version:** 1.0.1
 
@@ -2500,13 +2500,13 @@ Identifier ::= [a-zA-Z_] [a-zA-Z0-9_]*
 
 ### Reference Implementation
 - **Language:** TypeScript
-- **Repo:** https://github.com/ersinkoc/tonl
+- **Repo:** https://github.com/tonl-dev/tonl
 - **Tests:** 496 passing tests
 - **License:** MIT
 
 ### Community
-- **Issues:** https://github.com/ersinkoc/tonl/issues
-- **Discussions:** https://github.com/ersinkoc/tonl/discussions
+- **Issues:** https://github.com/tonl-dev/tonl/issues
+- **Discussions:** https://github.com/tonl-dev/tonl/discussions
 
 ---
 
@@ -2587,7 +2587,7 @@ To be considered a compliant TONL implementation, your library must:
 
 ```bash
 # Clone reference implementation
-git clone https://github.com/ersinkoc/tonl.git
+git clone https://github.com/tonl-dev/tonl.git
 cd tonl
 
 # Use test fixtures
@@ -2620,7 +2620,7 @@ When implementing TONL in other languages:
 **Suggested attribution:**
 ```
 This library implements the TONL format specification.
-TONL spec: https://github.com/ersinkoc/tonl/blob/main/docs/IMPLEMENTATION_REFERENCE.md
+TONL spec: https://github.com/tonl-dev/tonl/blob/main/docs/IMPLEMENTATION_REFERENCE.md
 ```
 
 ---
@@ -2628,7 +2628,7 @@ TONL spec: https://github.com/ersinkoc/tonl/blob/main/docs/IMPLEMENTATION_REFERE
 **Last Updated:** 2025-11-04
 **Specification Version:** 1.0.1
 **Maintainer:** Ersin KOÇ (ersinkoc@gmail.com)
-**Reference Implementation:** https://github.com/ersinkoc/tonl
+**Reference Implementation:** https://github.com/tonl-dev/tonl
 
 ---
 

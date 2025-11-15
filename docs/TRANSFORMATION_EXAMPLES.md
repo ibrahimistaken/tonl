@@ -1807,9 +1807,9 @@ This document provides:
 ---
 
 **For Support:**
-- Open an issue: https://github.com/ersinkoc/tonl/issues
-- Check examples: https://github.com/ersinkoc/tonl/tree/main/examples
-- Read spec: https://github.com/ersinkoc/tonl/blob/main/docs/SPECIFICATION.md
+- Open an issue: https://github.com/tonl-dev/tonl/issues
+- Check examples: https://github.com/tonl-dev/tonl/tree/main/examples
+- Read spec: https://github.com/tonl-dev/tonl/blob/main/docs/SPECIFICATION.md
 
 ---
 

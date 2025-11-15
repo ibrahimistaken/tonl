@@ -15,7 +15,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue.svg)](https://www.typescriptlang.org/)
 
 **🏠 Homepage**: [tonl.dev](https://tonl.dev)
-**📦 GitHub**: [github.com/ersinkoc/tonl](https://github.com/ersinkoc/tonl)
+**📦 GitHub**: [github.com/tonl-dev/tonl](https://github.com/tonl-dev/tonl)
 **📖 Documentation**: [Complete Guides](docs/)
 
 ---
@@ -617,9 +617,9 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - **Website**: [tonl.dev](https://tonl.dev)
 - **npm Package**: [npmjs.com/package/tonl](https://www.npmjs.com/package/tonl)
-- **GitHub**: [github.com/ersinkoc/tonl](https://github.com/ersinkoc/tonl)
-- **Issues**: [github.com/ersinkoc/tonl/issues](https://github.com/ersinkoc/tonl/issues)
-- **Discussions**: [github.com/ersinkoc/tonl/discussions](https://github.com/ersinkoc/tonl/discussions)
+- **GitHub**: [github.com/tonl-dev/tonl](https://github.com/tonl-dev/tonl)
+- **Issues**: [github.com/tonl-dev/tonl/issues](https://github.com/tonl-dev/tonl/issues)
+- **Discussions**: [github.com/tonl-dev/tonl/discussions](https://github.com/tonl-dev/tonl/discussions)
 - **VS Code Extension**: [Coming Soon]
 
 ---

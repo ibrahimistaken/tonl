@@ -277,8 +277,8 @@ await editor.restoreBackup();
    ```
 
 4. **Join the Community**
-   - GitHub: https://github.com/ersinkoc/tonl
-   - Issues: https://github.com/ersinkoc/tonl/issues
+   - GitHub: https://github.com/tonl-dev/tonl
+   - Issues: https://github.com/tonl-dev/tonl/issues
 
 ---
 
@@ -341,4 +341,4 @@ A: Yes! Streaming API handles multi-GB files with <100MB memory.
 
 **Ready to build amazing things with TONL! 🚀**
 
-For more help: https://github.com/ersinkoc/tonl/tree/main/docs
+For more help: https://github.com/tonl-dev/tonl/tree/main/docs

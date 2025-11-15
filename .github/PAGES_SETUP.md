@@ -2,7 +2,7 @@
 
 ## Step 1: Enable GitHub Pages
 
-1. Go to: https://github.com/ersinkoc/tonl/settings/pages
+1. Go to: https://github.com/tonl-dev/tonl/settings/pages
 2. Under "Source", select: **Deploy from a branch**
 3. Branch: **main**
 4. Folder: **/website** (or /root if website is at root)

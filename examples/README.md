@@ -314,8 +314,8 @@ node examples/schema/01-validation-demo.ts
 - Check `dist/*.d.ts` files for type definitions
 
 ### Community
-- GitHub: https://github.com/ersinkoc/tonl
-- Issues: https://github.com/ersinkoc/tonl/issues
+- GitHub: https://github.com/tonl-dev/tonl
+- Issues: https://github.com/tonl-dev/tonl/issues
 
 ---
 

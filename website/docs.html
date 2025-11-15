@@ -60,7 +60,7 @@
                     <a href="index.html#features" class="text-slate-600 hover:text-slate-900 font-medium">Features</a>
                     <a href="docs.html" class="text-slate-900 font-semibold">Docs</a>
                     <a href="examples.html" class="text-slate-600 hover:text-slate-900 font-medium">Playground</a>
-                    <a href="https://github.com/ersinkoc/tonl" target="_blank" class="text-slate-600 hover:text-slate-900 font-medium">GitHub</a>
+                    <a href="https://github.com/tonl-dev/tonl" target="_blank" class="text-slate-600 hover:text-slate-900 font-medium">GitHub</a>
                 </div>
             </div>
         </div>
@@ -93,12 +93,15 @@
                     <a @click="tab = 'streaming'" :class="tab === 'streaming' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition">
                         🌊 Streaming
                     </a>
+                    <a @click="tab = 'optimization'" :class="tab === 'optimization' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition">
+                        ⚡ v2.0 Optimization
+                    </a>
                     <a @click="tab = 'impl'" :class="tab === 'impl' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'" class="block px-4 py-2 rounded-lg cursor-pointer transition" id="implementation">
                         Implementation
                     </a>
 
                     <div class="pt-4 mt-4 border-t border-slate-200">
-                        <a href="https://github.com/ersinkoc/tonl/tree/main/docs" target="_blank" class="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition">
+                        <a href="https://github.com/tonl-dev/tonl/tree/main/docs" target="_blank" class="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition">
                             Full Docs on GitHub →
                         </a>
                     </div>
@@ -200,7 +203,7 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
 
                     <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-6">
                         <p class="text-emerald-900 font-semibold mb-2">Need more?</p>
-                        <p class="text-emerald-800">Check out the <a href="https://github.com/ersinkoc/tonl/blob/main/docs/GETTING_STARTED.md" class="underline font-medium" target="_blank">full getting started guide</a> on GitHub.</p>
+                        <p class="text-emerald-800">Check out the <a href="https://github.com/tonl-dev/tonl/blob/main/docs/GETTING_STARTED.md" class="underline font-medium" target="_blank">full getting started guide</a> on GitHub.</p>
                     </div>
                 </div>
 
@@ -331,7 +334,7 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                         </div>
                     </div>
 
-                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6">
+                    <a href="https://github.com/tonl-dev/tonl/blob/main/docs/API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6">
                         View complete API reference (50+ methods)
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -417,7 +420,7 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                         </div>
                     </div>
 
-                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/QUERY_API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6">
+                    <a href="https://github.com/tonl-dev/tonl/blob/main/docs/QUERY_API.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6">
                         View complete query documentation
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -432,39 +435,58 @@ doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-
                         <p class="text-lg text-slate-600">Command-line interface for TONL</p>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-slate-900 rounded-lg p-5">
-                            <div class="text-slate-500 text-xs mb-2">ENCODE</div>
-                            <code class="text-slate-300 text-sm">tonl encode data.json --smart</code>
+                    <div class="space-y-6">
+                        <!-- v2.0 Optimization Commands -->
+                        <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-200 rounded-xl p-6">
+                            <h3 class="font-semibold text-emerald-900 mb-3">⚡ v2.0 Optimization Commands</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-emerald-900 rounded-lg p-5">
+                                    <div class="text-emerald-300 text-xs mb-2">OPTIMIZE ALL</div>
+                                    <code class="text-emerald-100 text-sm">tonl encode data.json --optimize --verbose</code>
+                                </div>
+                                <div class="bg-emerald-900 rounded-lg p-5">
+                                    <div class="text-emerald-300 text-xs mb-2">SPECIFIC STRATEGIES</div>
+                                    <code class="text-emerald-100 text-sm">tonl encode data.json --optimize dictionary,delta</code>
+                                </div>
+                            </div>
+                            <p class="text-emerald-800 text-sm mt-3">Enable advanced optimization with automatic strategy selection</p>
                         </div>
 
-                        <div class="bg-slate-900 rounded-lg p-5">
-                            <div class="text-slate-500 text-xs mb-2">DECODE</div>
-                            <code class="text-slate-300 text-sm">tonl decode data.tonl</code>
-                        </div>
+                        <!-- Standard Commands -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900 rounded-lg p-5">
+                                <div class="text-slate-500 text-xs mb-2">ENCODE</div>
+                                <code class="text-slate-300 text-sm">tonl encode data.json --smart</code>
+                            </div>
 
-                        <div class="bg-slate-900 rounded-lg p-5">
-                            <div class="text-slate-500 text-xs mb-2">QUERY</div>
-                            <code class="text-slate-300 text-sm">tonl query users.tonl 'users[*]'</code>
-                        </div>
+                            <div class="bg-slate-900 rounded-lg p-5">
+                                <div class="text-slate-500 text-xs mb-2">DECODE</div>
+                                <code class="text-slate-300 text-sm">tonl decode data.tonl</code>
+                            </div>
 
-                        <div class="bg-slate-900 rounded-lg p-5">
-                            <div class="text-slate-500 text-xs mb-2">GET</div>
-                            <code class="text-slate-300 text-sm">tonl get data.tonl "user.name"</code>
-                        </div>
+                            <div class="bg-slate-900 rounded-lg p-5">
+                                <div class="text-slate-500 text-xs mb-2">QUERY</div>
+                                <code class="text-slate-300 text-sm">tonl query users.tonl 'users[*]'</code>
+                            </div>
 
-                        <div class="bg-slate-900 rounded-lg p-5">
-                            <div class="text-slate-500 text-xs mb-2">VALIDATE</div>
-                            <code class="text-slate-300 text-sm">tonl validate --schema schema.tonl</code>
-                        </div>
+                            <div class="bg-slate-900 rounded-lg p-5">
+                                <div class="text-slate-500 text-xs mb-2">GET</div>
+                                <code class="text-slate-300 text-sm">tonl get data.tonl "user.name"</code>
+                            </div>
 
-                        <div class="bg-slate-900 rounded-lg p-5">
-                            <div class="text-slate-500 text-xs mb-2">STATS</div>
-                            <code class="text-slate-300 text-sm">tonl stats data.json</code>
+                            <div class="bg-slate-900 rounded-lg p-5">
+                                <div class="text-slate-500 text-xs mb-2">VALIDATE</div>
+                                <code class="text-slate-300 text-sm">tonl validate --schema schema.tonl</code>
+                            </div>
+
+                            <div class="bg-slate-900 rounded-lg p-5">
+                                <div class="text-slate-500 text-xs mb-2">STATS</div>
+                                <code class="text-slate-300 text-sm">tonl stats data.json --tokenizer gpt-5</code>
+                            </div>
                         </div>
                     </div>
 
-                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/CLI.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
+                    <a href="https://github.com/tonl-dev/tonl/blob/main/docs/CLI.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
                         View full CLI documentation
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -516,7 +538,7 @@ This represents: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"nam
                         </ul>
                     </div>
 
-                    <a href="https://github.com/ersinkoc/tonl/blob/main/LLM_PROMPT.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
+                    <a href="https://github.com/tonl-dev/tonl/blob/main/LLM_PROMPT.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
                         View full LLM integration guide
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -600,7 +622,7 @@ users: list&lt;User&gt; required min:1</code></pre>
                         </div>
                     </div>
 
-                    <a href="https://github.com/ersinkoc/tonl/blob/main/docs/SCHEMA_SPECIFICATION.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
+                    <a href="https://github.com/tonl-dev/tonl/blob/main/docs/SCHEMA_SPECIFICATION.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
                         View full schema specification
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -681,6 +703,127 @@ createReadStream(<span class="text-emerald-400">'huge.json'</span>)
                     </div>
                 </div>
 
+                <!-- v2.0 Optimization -->
+                <div x-show="tab === 'optimization'" class="space-y-8">
+                    <div>
+                        <h1 class="text-4xl font-bold text-slate-900 mb-4">v2.0 Advanced Optimization</h1>
+                        <p class="text-lg text-slate-600">10 optimization strategies for up to 60% additional compression</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-200 rounded-xl p-6">
+                        <h3 class="font-semibold text-emerald-900 mb-3">🚀 Complete Optimization Suite</h3>
+                        <p class="text-emerald-800 mb-4">TONL v2.0 introduces 10 advanced optimization strategies that provide up to 60% additional compression beyond standard TONL encoding.</p>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-white/80 backdrop-blur rounded-lg p-4 border border-emerald-200">
+                                <h4 class="font-semibold text-slate-900 mb-1">🎯 10 Strategies</h4>
+                                <p class="text-xs text-slate-600">Dictionary, Delta, RLE, Bit Packing, Column Reorder, Quantizer, Schema Inheritance, Hierarchical Grouping, Tokenizer Aware, Adaptive</p>
+                            </div>
+                            <div class="bg-white/80 backdrop-blur rounded-lg p-4 border border-emerald-200">
+                                <h4 class="font-semibold text-slate-900 mb-1">📈 <strong>60%</strong> Savings</h4>
+                                <p class="text-xs text-slate-600">Additional compression beyond standard TONL with automatic strategy selection</p>
+                            </div>
+                            <div class="bg-white/80 backdrop-blur rounded-lg p-4 border border-emerald-200">
+                                <h4 class="font-semibold text-slate-900 mb-1">🚀 Zero Effort</h4>
+                                <p class="text-xs text-slate-600">One-line activation with automatic optimization</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Quick Start</h3>
+                        <div class="space-y-4">
+                            <div class="code-wrapper">
+                                <div class="bg-slate-900 rounded-lg p-4">
+                                    <code class="text-emerald-400 text-sm">tonl encode data.json --optimize --verbose</code>
+                                </div>
+                                <button class="copy-code-btn" onclick="copyCode(this, 'tonl encode data.json --optimize --verbose')">Copy</button>
+                            </div>
+                            <p class="text-slate-600 text-sm">Enable all optimization strategies with a single command</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Optimization Strategies</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">📚 Dictionary Encoding</h4>
+                                <p class="text-slate-600 text-sm">Compress repetitive values using lookup dictionaries</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">⏭️ Delta Encoding</h4>
+                                <p class="text-slate-600 text-sm">Compress sequential numeric data (timestamps, IDs, counters)</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">🔄 Run-Length Encoding</h4>
+                                <p class="text-slate-600 text-sm">Compress repeated consecutive values</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">💾 Bit Packing</h4>
+                                <p class="text-slate-600 text-sm">Optimized binary encoding for booleans and small integers</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">🔄 Column Reordering</h4>
+                                <p class="text-slate-600 text-sm">Optimize field order for better compression</p>
+                            </div>
+                            <div class="border border-slate-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-slate-900 mb-2">🔢 Numeric Quantization</h4>
+                                <p class="text-slate-600 text-sm">Reduce decimal precision safely</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">API Usage</h3>
+                        <div class="code-wrapper">
+                            <div class="bg-slate-900 rounded-lg p-6">
+                                <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> { AdaptiveOptimizer } <span class="text-purple-400">from</span> <span class="text-emerald-400">'tonl'</span>;
+
+<span class="text-slate-500">// Create optimizer</span>
+<span class="text-purple-400">const</span> optimizer = <span class="text-purple-400">new</span> AdaptiveOptimizer();
+
+<span class="text-slate-500">// Analyze dataset</span>
+<span class="text-purple-400">const</span> analysis = optimizer.analyzeDataset(data);
+console.log(<span class="text-emerald-400">`Estimated savings: ${analysis.estimatedSavings}%`</span>);
+
+<span class="text-slate-500">// Apply optimization</span>
+<span class="text-purple-400">const</span> result = optimizer.optimize(data);
+console.log(<span class="text-emerald-400">`Directives: ${result.directives.length}`</span>);</code></pre>
+                            </div>
+                            <button class="copy-code-btn" onclick="copyCode(this, `import { AdaptiveOptimizer } from 'tonl';\\n\\nconst optimizer = new AdaptiveOptimizer();\\nconst analysis = optimizer.analyzeDataset(data);\\nconsole.log(\\`Estimated savings: \\${analysis.estimatedSavings}%\\`);\\n\\nconst result = optimizer.optimize(data);\\nconsole.log(\\`Directives: \\${result.directives.length}\\`);`)">Copy</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-slate-900 mb-4">Performance Impact</h3>
+                        <div class="grid md:grid-cols-4 gap-4">
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-emerald-600 mb-1">60%</div>
+                                <div class="text-xs text-slate-600">Additional Savings</div>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-blue-600 mb-1">70%</div>
+                                <div class="text-xs text-slate-600">Total vs JSON</div>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-purple-600 mb-1">O(n)</div>
+                                <div class="text-xs text-slate-600">Time Complexity</div>
+                            </div>
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                                <div class="text-2xl font-bold text-orange-600 mb-1">100%</div>
+                                <div class="text-xs text-slate-600">Backward Compatible</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="https://github.com/tonl-dev/tonl/blob/main/docs/OPTIMIZATION.md" target="_blank" class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium">
+                        View complete optimization documentation
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                </div>
+
                 <!-- Implementation -->
                 <div x-show="tab === 'impl'" class="space-y-8">
                     <div>
@@ -693,7 +836,7 @@ createReadStream(<span class="text-emerald-400">'huge.json'</span>)
                         <p class="text-slate-600 mb-4">95KB of implementation documentation with algorithms, pseudo-code, and test requirements.</p>
 
                         <div class="space-y-3">
-                            <a href="https://github.com/ersinkoc/tonl/blob/main/docs/IMPLEMENTATION_REFERENCE.md" target="_blank" class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition">
+                            <a href="https://github.com/tonl-dev/tonl/blob/main/docs/IMPLEMENTATION_REFERENCE.md" target="_blank" class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition">
                                 <div>
                                     <div class="font-semibold text-slate-900">Implementation Reference</div>
                                     <div class="text-sm text-slate-600">Algorithms, type system, test cases (58KB)</div>
@@ -703,7 +846,7 @@ createReadStream(<span class="text-emerald-400">'huge.json'</span>)
                                 </svg>
                             </a>
 
-                            <a href="https://github.com/ersinkoc/tonl/blob/main/docs/TRANSFORMATION_EXAMPLES.md" target="_blank" class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition">
+                            <a href="https://github.com/tonl-dev/tonl/blob/main/docs/TRANSFORMATION_EXAMPLES.md" target="_blank" class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition">
                                 <div>
                                     <div class="font-semibold text-slate-900">Transformation Examples</div>
                                     <div class="text-sm text-slate-600">20+ JSON ↔ TONL examples (37KB)</div>
@@ -748,9 +891,9 @@ createReadStream(<span class="text-emerald-400">'huge.json'</span>)
             <div class="flex flex-col md:flex-row justify-between items-center text-sm text-slate-600">
                 <p>© 2025 TONL. MIT License.</p>
                 <div class="flex items-center gap-4 mt-4 md:mt-0">
-                    <span>v1.0.12</span>
+                    <span>v2.0.0</span>
                     <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
-                    <span class="text-emerald-600 font-medium">100% Feature Coverage</span>
+                    <span class="text-emerald-600 font-medium">Complete Optimization Suite</span>
                 </div>
             </div>
         </div>
