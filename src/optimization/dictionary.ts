@@ -113,16 +113,19 @@ export class DictionaryBuilder {
   }
 
   /**
-   * Convert number to alphabetic encoding (0 → A, 1 → B, ..., 25 → Z)
+   * Convert number to alphabetic encoding (0 → A, 1 → B, ..., 25 → Z, 26 → AA, ...)
+   * Robust implementation that handles any number of entries up to maxDictSize
    */
   private numToAlpha(num: number): string {
-    if (num < 26) {
-      return String.fromCharCode(65 + num); // A-Z
+    let s = '';
+    let t;
+
+    while (num >= 0) {
+      t = num % 26;
+      s = String.fromCharCode(65 + t) + s;
+      num = Math.floor(num / 26) - 1;
     }
-    // For larger numbers, use multi-char: AA, AB, ...
-    const first = Math.floor(num / 26);
-    const second = num % 26;
-    return String.fromCharCode(65 + first - 1) + String.fromCharCode(65 + second);
+    return s;
   }
 
   /**

@@ -139,8 +139,9 @@ export class TokenizerAware {
     }
 
     if (this.options.minimalQuoting) {
-      // Remove unnecessary quotes from simple values
-      optimized = optimized.replace(/"(\w+)"/g, '$1');
+      // Remove unnecessary quotes from simple values (including hyphens, dots, etc.)
+      // Only unquote values that don't contain delimiters or whitespace
+      optimized = optimized.replace(/"([^",\s]+)"/g, '$1');
     }
 
     if (this.options.compactNumbers) {

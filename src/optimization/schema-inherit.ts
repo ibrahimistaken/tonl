@@ -215,6 +215,18 @@ export class SchemaInheritance {
     const totalColumns = cols1.size + cols2.size - commonColumns.length;
     const similarity = commonColumns.length / totalColumns;
 
+    // Guard against division by zero when no common columns
+    if (commonColumns.length === 0) {
+      return {
+        schemaName: `schema_${Date.now()}`,
+        similarity: 0,
+        commonColumns: [],
+        uniqueColumns,
+        recommended: false,
+        estimatedSavings: 0
+      };
+    }
+
     // Estimate savings: if we define schema once, we save column definitions
     // For each subsequent block: save ~(column_count * avg_column_name_length) bytes
     const avgColumnNameLength = commonColumns.reduce((sum, name) => sum + name.length, 0) / commonColumns.length;
@@ -327,12 +339,14 @@ export class SchemaInheritance {
     const columnParts = columnDefs.split(',').map(s => s.trim());
 
     const columns: ColumnSchema[] = columnParts.map(part => {
-      const colMatch = part.match(/^(\w+):(\w+)(\?)?$/);
+      // Allow more flexible column names (hyphens, dots, etc.) not just \w+
+      const colMatch = part.match(/^([^:]+):(\w+)(\?)?$/);
       if (!colMatch) {
         throw new Error(`Invalid column definition: ${part}`);
       }
 
-      const [, name, type, nullable] = colMatch;
+      const [, rawName, type, nullable] = colMatch;
+      const name = rawName.trim(); // Trim the column name
 
       // Validate type
       const validTypes = ['string', 'number', 'boolean', 'null', 'array', 'object', 'mixed'];

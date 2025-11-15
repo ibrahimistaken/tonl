@@ -339,8 +339,10 @@ export class NumericQuantizer {
     const column = parts[0].trim();
     const precision = parseInt(parts[1].trim(), 10);
 
+    // Limit precision to 15 decimal places to match JavaScript's Number precision limits
+    // (IEEE 754 double precision supports ~15-17 significant decimal digits)
     if (!Number.isFinite(precision) || precision < 0 || precision > 15) {
-      throw new Error(`Invalid precision value: ${parts[1]}`);
+      throw new Error(`Invalid precision value: ${parts[1]} (must be 0-15)`);
     }
 
     return { column, precision };

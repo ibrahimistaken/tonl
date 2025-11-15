@@ -95,6 +95,7 @@ const packer = new BitPacker();
 const packed = packer.packBooleans([true, false, true]);
 
 const delta = new DeltaEncoder();
+const timestamps = [1704067200000, 1704067201000, 1704067202000];
 const compressed = delta.encode(timestamps, 'timestamp');
 ```
 

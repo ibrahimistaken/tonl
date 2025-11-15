@@ -251,6 +251,11 @@ export class BitPacker {
    * @returns Unpacked integer array
    */
   unpackIntegers(packed: number[], count: number, bitWidth: number): number[] {
+    // Guard against infinite loop when bitWidth is 0
+    if (bitWidth === 0) {
+      return Array(count).fill(0);
+    }
+
     const result: number[] = [];
     let buffer = 0;
     let bitsInBuffer = 0;
@@ -310,9 +315,15 @@ export class BitPacker {
 
     const [, type, widthStr, bytesStr] = match;
     const bitWidth = type === 'b' ? 1 : parseInt(widthStr, 10);
+
+    // Validate bit width for integer types
+    if (type === 'i' && isNaN(bitWidth)) {
+      throw new Error(`Invalid bit-packed format: missing or invalid bit width for integer type: ${encoded}`);
+    }
+
     const packed = bytesStr.split(',').map(s => parseInt(s.trim(), 10));
 
-    // Validate
+    // Validate byte values
     if (packed.some(n => !Number.isFinite(n) || n < 0 || n > 255)) {
       throw new Error(`Invalid byte values in: ${encoded}`);
     }

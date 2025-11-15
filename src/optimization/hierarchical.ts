@@ -172,17 +172,41 @@ export class HierarchicalGrouping {
           node.commonFields.set(key, value);
         });
 
-        // Process first element to get structure
-        const firstElement = data[0];
-        Object.keys(firstElement).forEach(key => {
+        // Process all elements to get complete structure
+        // Collect all unique fields across all array elements
+        const allKeys = new Set<string>();
+        const nestedFieldsMap = new Map<string, any[]>();
+
+        data.forEach((element: any) => {
+          if (typeof element === 'object' && element !== null) {
+            Object.keys(element).forEach(key => {
+              allKeys.add(key);
+
+              // Collect nested structures for later recursion
+              if (typeof element[key] === 'object' && element[key] !== null) {
+                if (!nestedFieldsMap.has(key)) {
+                  nestedFieldsMap.set(key, []);
+                }
+                nestedFieldsMap.get(key)!.push(element[key]);
+              }
+            });
+          }
+        });
+
+        // Add unique fields (non-common fields)
+        allKeys.forEach(key => {
           if (!commonFields.has(key)) {
             node.uniqueFields.push(key);
           }
+        });
 
-          // Recurse into nested structures
-          if (typeof firstElement[key] === 'object' && firstElement[key] !== null) {
+        // Recurse into nested structures
+        nestedFieldsMap.forEach((nestedValues, key) => {
+          // Use the first non-null nested value for recursion
+          const sampleValue = nestedValues.find(v => v !== null);
+          if (sampleValue) {
             const childNode = this.buildHierarchyTree(
-              firstElement[key],
+              sampleValue,
               currentDepth + 1,
               maxDepth,
               key
@@ -201,7 +225,7 @@ export class HierarchicalGrouping {
         if (typeof value === 'object' && value !== null) {
           // Nested object or array
           const childNode = this.buildHierarchyTree(value, currentDepth + 1, maxDepth, key);
-          if (childNode.commonFields.size > 0 || childNode.children.length > 0) {
+          if (childNode.commonFields.size > 0 || childNode.uniqueFields.length > 0 || childNode.children.length > 0) {
             node.children.push(childNode);
           }
         } else {

@@ -92,6 +92,20 @@ export class AdaptiveOptimizer {
     const totalValues = values.length;
     const hasNulls = values.some(v => v === null || v === undefined);
 
+    // Guard against empty arrays
+    if (totalValues === 0) {
+      return {
+        columnName,
+        dataType,
+        uniqueValues: 0,
+        totalValues: 0,
+        hasNulls: false,
+        recommendedStrategies: [],
+        estimatedSavings: 0,
+        reasoning: 'Empty column'
+      };
+    }
+
     const recommendedStrategies: OptimizationStrategy[] = [];
     let estimatedSavings = 0;
     const reasons: string[] = [];
@@ -298,8 +312,20 @@ export class AdaptiveOptimizer {
       if (columnAnalysis.recommendedStrategies.includes('rle')) {
         directives.push(this.rleEncoder.generateDirective(columnName));
         const encoded = this.rleEncoder.encode(values);
-        // Note: RLE changes array length, so this is a simplified version
-        // In practice, you'd need to handle row-to-value mapping differently
+
+        // RLE changes array structure (N values → M runs where M ≤ N)
+        // We need to store the RLE representation in a special way
+        // Strategy: Store RLE-encoded data as a single array in first row,
+        // and mark other rows with a special sentinel value
+        if (encoded.length > 0) {
+          // Store encoded array in metadata or first row
+          optimizedData[0][`__rle_${columnName}`] = encoded;
+
+          // Remove original column to avoid duplication
+          optimizedData.forEach(row => {
+            delete row[columnName];
+          });
+        }
       }
 
       // Apply quantization (for numeric columns)
