@@ -116,9 +116,10 @@ function evaluateBinaryExpression(
         });
       } catch (e) {
         if (e instanceof SecurityError) {
-          // Log security event but don't expose details to user
-          console.warn('[SECURITY] Unsafe regex pattern blocked:', e.message);
-          throw e; // Re-throw security errors
+          // BUG-NEW-006 FIX: Remove console.warn from library code
+          // Library code should not produce console output
+          // Re-throw security errors for caller to handle
+          throw e;
         }
         // Invalid regex syntax or other errors
         return false;
@@ -227,9 +228,10 @@ function evaluateFunctionExpression(
         });
       } catch (e) {
         if (e instanceof SecurityError) {
-          // Log security event
-          console.warn('[SECURITY] Unsafe regex pattern blocked in matches():', e.message);
-          throw e; // Re-throw security errors
+          // BUG-NEW-006 FIX: Remove console.warn from library code
+          // Library code should not produce console output
+          // Re-throw security errors for caller to handle
+          throw e;
         }
         // Invalid regex syntax or other errors
         return false;

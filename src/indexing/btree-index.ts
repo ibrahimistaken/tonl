@@ -41,6 +41,19 @@ export class BTreeIndex implements IIndex {
 
     // Numbers
     if (typeof a === 'number' && typeof b === 'number') {
+      // BUG-NEW-008 FIX: Handle NaN values explicitly
+      // NaN comparisons must be handled before subtraction to avoid returning NaN
+      const aIsNaN = Number.isNaN(a);
+      const bIsNaN = Number.isNaN(b);
+
+      // Both NaN: equal
+      if (aIsNaN && bIsNaN) return 0;
+      // Only a is NaN: sort NaN before numbers
+      if (aIsNaN) return -1;
+      // Only b is NaN: sort numbers before NaN
+      if (bIsNaN) return 1;
+
+      // Normal numeric comparison
       return a - b;
     }
 

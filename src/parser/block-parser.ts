@@ -399,7 +399,7 @@ export function parseObjectBlock(
       lineIndex++;
     } else {
       // BUG-010 FIX: Enhanced error handling for malformed lines
-      // In strict mode, report unparseable lines; in non-strict mode, skip with warning context
+      // In strict mode, report unparseable lines; in non-strict mode, skip silently
       if (context.strict || trimmed.length > 0) {
         const contextLines = Math.max(0, lineIndex - 1);
         const surroundingLines = lines.slice(
@@ -415,11 +415,10 @@ export function parseObjectBlock(
             undefined,
             line
           );
-        } else {
-          // In non-strict mode, we still want to track parsing issues for debugging
-          // but not throw errors that would break processing
-          console.warn(`⚠️  Skipping unparseable line ${(context.currentLine || 0) + lineIndex + 1}: "${trimmed.substring(0, 50)}${trimmed.length > 50 ? '...' : ''}"`);
         }
+        // BUG-NEW-007 FIX: Remove console.warn from library code
+        // In non-strict mode, skip unparseable lines silently
+        // Library code should not produce console output
       }
       lineIndex++;
     }
