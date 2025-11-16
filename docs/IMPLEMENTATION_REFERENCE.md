@@ -1,9 +1,9 @@
 # TONL Implementation Reference Guide
 
-**Version:** 1.0.1
+**Version:** 2.0.4
 **Target Audience:** Language implementers (Python, Go, Rust, Java, C#, etc.)
 **Purpose:** Complete specification for implementing TONL encoder/decoder in any language
-**Last Updated:** 2025-11-04
+**Last Updated:** 2025-11-16
 
 ---
 
@@ -2487,7 +2487,7 @@ Identifier ::= [a-zA-Z_] [a-zA-Z0-9_]*
 **Breaking Changes from 0.x:**
 - None - fully backward compatible
 
-**Recommendation:** Target v1.0 for new implementations
+**Recommendation:** Target v2.0 for new implementations
 
 ---
 

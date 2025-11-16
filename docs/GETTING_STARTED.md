@@ -1,6 +1,6 @@
-# Getting Started with TONL v1.0.3
+# Getting Started with TONL v2.0.4
 
-Welcome to TONL! This guide will help you get started with all the powerful features of TONL.
+Welcome to TONL! This guide will help you get started with all the powerful features of TONL v2.0.4, including the revolutionary dual-mode system for handling problematic JSON keys.
 
 ---
 
@@ -123,6 +123,100 @@ const diff = doc.diff(before);
 console.log(diff.summary);         // { added: 1, modified: 1, deleted: 0 }
 console.log(doc.diffString(before)); // Human-readable diff
 ```
+
+### 6. Dual-Mode System (v2.0.4)
+
+TONL v2.0.4 introduces a revolutionary dual-mode system for handling problematic JSON keys that contain special characters.
+
+#### Problem: Messy JSON Keys
+
+```json
+{
+  "#": "hash-value",
+  "": "empty-value",
+  "key with spaces": "spaced-value",
+  "@type": "at-symbol-value"
+}
+```
+
+#### Solution 1: Default Mode (Perfect Round-trip)
+
+```typescript
+import { TONLDocument } from 'tonl';
+
+const doc = TONLDocument.fromJSON({
+  "#": "hash-value",
+  "": "empty-value",
+  "key with spaces": "spaced-value",
+  "@type": "at-symbol-value"
+});
+
+console.log(doc.toTONL());
+```
+
+**Output (quoted keys):**
+```tonl
+""[1]:
+  "empty-value"
+"#"[1]:
+  "hash-value"
+"key with spaces"[1]:
+  "spaced-value"
+"@type"[1]:
+  "at-symbol-value"
+```
+
+#### Solution 2: Preprocessing Mode (Clean Output)
+
+**Using CLI:**
+```bash
+tonl encode messy-data.json --preprocess --out clean.tonl
+```
+
+**Using Browser API:**
+```typescript
+import { preprocessJSON } from 'tonl/browser';
+
+const messyJSON = `{
+  "#": "hash-value",
+  "": "empty-value",
+  "key with spaces": "spaced-value",
+  "@type": "at-symbol-value"
+}`;
+
+// Preprocess keys
+const cleanJSON = preprocessJSON(messyJSON);
+const data = JSON.parse(cleanJSON);
+const doc = TONLDocument.fromJSON(data);
+
+console.log(doc.toTONL());
+```
+
+**Output (clean keys):**
+```tonl
+empty[1]:
+  "empty-value"
+comment[1]:
+  "hash-value"
+key_with_spaces[1]:
+  "spaced-value"
+type[1]:
+  "at-symbol-value"
+```
+
+#### When to Use Each Mode
+
+**Default Mode** (recommended for production):
+- Configuration files
+- API data
+- Database exports
+- When exact round-trip matters
+
+**Preprocessing Mode**:
+- Data analysis
+- LLM prompts
+- Development tools
+- When readability is priority
 
 ---
 
@@ -291,7 +385,7 @@ A: TONL is more compact (32-45% smaller) and provides a rich query/modification 
 A: Yes! `TONLDocument.fromJSON(yourData)` - works with any JSON.
 
 ### Q: Is it production-ready?
-A: Yes! v1.0.3 is stable with 100% test pass rate.
+A: Yes! v2.0.4 is stable with 100% test pass rate.
 
 ### Q: How fast is it?
 A: Very fast! Simple queries: 0.005ms, Filters: 0.03ms, 10-1600x faster than targets.

@@ -1,10 +1,17 @@
-# TONL API Documentation v2.0.0
+# TONL API Documentation v2.0.4
 
-**Version:** 2.0.0
+**Version:** 2.0.4
 **Status:** Stable & Production Ready
-**Last Updated:** 2025-11-15
+**Last Updated:** 2025-11-16
 
 This document provides detailed API documentation for the TONL TypeScript library.
+
+## 🎉 What's New in v2.0.4
+
+- **Dual-Mode System**: Choose between perfect round-trip (quoting) and clean output (preprocessing)
+- **Enhanced CLI Support**: `--preprocess` flag for handling problematic JSON keys
+- **Browser Preprocessing**: `preprocessJSON()` function for key transformation
+- **Advanced Key Quoting**: Smart handling of `#`, `@`, spaces, and special characters
 
 ---
 
@@ -13,16 +20,17 @@ This document provides detailed API documentation for the TONL TypeScript librar
 1. [TONLDocument API](#tonldocument-api) (Primary Interface)
 2. [Core Functions](#core-functions) (Legacy/Lower-level)
 3. [Utility Functions](#utility-functions)
-4. [Optimization API](#optimization-api-v200) ⭐ **NEW**
-5. [Streaming API](#streaming-api-v075)
-6. [Schema API](#schema-api-v080)
-7. [Query API](#query-api-v060)
-8. [Modification API](#modification-api-v065)
-9. [Navigation API](#navigation-api-v060)
-10. [Indexing API](#indexing-api-v070)
-11. [File Operations](#file-operations)
-12. [Error Handling](#error-handling)
-13. [Performance](#performance-considerations)
+4. [Dual-Mode System](#dual-mode-system-v204) ⭐ **NEW**
+5. [Optimization API](#optimization-api-v200)
+6. [Streaming API](#streaming-api-v075)
+7. [Schema API](#schema-api-v080)
+8. [Query API](#query-api-v060)
+9. [Modification API](#modification-api-v065)
+10. [Navigation API](#navigation-api-v060)
+11. [Indexing API](#indexing-api-v070)
+12. [File Operations](#file-operations)
+13. [Error Handling](#error-handling)
+14. [Performance](#performance-considerations)
 
 ---
 
@@ -596,6 +604,189 @@ const data = {
 // Smart encoding will use "|" delimiter to avoid quoting commas
 const optimized = encodeSmart(data);
 ```
+
+---
+
+## Dual-Mode System v2.0.4 ⭐ **NEW**
+
+The dual-mode system provides two approaches for handling problematic JSON keys:
+
+### Mode 1: Default (Quoting Only)
+- **Perfect Round-trip**: Data integrity guaranteed
+- **Smart Quoting**: Automatically quotes problematic keys
+- **Special Characters**: Handles `#`, `@`, spaces, empty keys, etc.
+
+### Mode 2: Preprocessing (Key Transformation)
+- **Clean Output**: Transforms problematic keys to safe identifiers
+- **Enhanced Readability**: Better for LLM prompts and data analysis
+- **Automatic Mapping**: Handles key transformation transparently
+
+### Browser Preprocessing Function
+
+#### `preprocessJSON(input, options?)`
+
+Preprocess JSON data to clean up problematic keys.
+
+```typescript
+function preprocessJSON(
+  input: string | object,
+  options?: PreprocessOptions
+): string | object
+
+interface PreprocessOptions {
+  renameEmptyKeys?: boolean;    // Rename empty string keys (default: true)
+  renameSpecialChars?: boolean; // Rename keys with special chars (default: true)
+  renameSpaces?: boolean;       // Rename keys with spaces (default: true)
+  renameReserved?: boolean;     // Rename reserved keywords (default: true)
+}
+```
+
+**Examples:**
+
+```typescript
+import { preprocessJSON, encodeTONL } from 'tonl/browser';
+
+const problematicJSON = `{
+  "#": "hash-key",
+  "": "empty-key",
+  "key with spaces": "spaced-key",
+  "@type": "at-symbol-key"
+}`;
+
+// Preprocess for clean TONL output
+const preprocessed = preprocessJSON(problematicJSON);
+console.log(preprocessed);
+// {
+//   "comment": "hash-key",
+//   "empty": "empty-key",
+//   "key_with_spaces": "spaced-key",
+//   "type": "at-symbol-key"
+// }
+
+// Encode to clean TONL
+const tonl = encodeTONL(JSON.parse(preprocessed));
+console.log(tonl);
+// comment[1]:
+//   "hash-key"
+// empty[1]:
+//   "empty-key"
+// key_with_spaces[1]:
+//   spaced-key
+// type[1]:
+//   "at-symbol-key"
+```
+
+### Node.js Key Transformation
+
+#### `transformObjectKeys(obj, transformer)`
+
+Transform object keys using a custom function.
+
+```typescript
+function transformObjectKeys(
+  obj: any,
+  transformer: (key: string, path: string) => string
+): any
+```
+
+**Example:**
+
+```typescript
+import { transformObjectKeys } from 'tonl';
+
+const data = {
+  "#": "hash-value",
+  "": "empty-value",
+  "user name": "Alice"
+};
+
+// Custom transformation
+const transformed = transformObjectKeys(data, (key, path) => {
+  if (key === '#') return 'comment';
+  if (key === '') return 'empty';
+  if (key.includes(' ')) return key.replace(/ /g, '_');
+  return key;
+});
+
+console.log(transformed);
+// {
+//   "comment": "hash-value",
+//   "empty": "empty-value",
+//   "user_name": "Alice"
+// }
+```
+
+### CLI Integration
+
+The CLI automatically supports preprocessing through the `--preprocess` flag:
+
+```bash
+# Default mode (perfect round-trip)
+tonl encode messy-data.json
+
+# Preprocessing mode (clean output)
+tonl encode messy-data.json --preprocess
+```
+
+### When to Use Each Mode
+
+**Default Mode (Quoting)**
+- Configuration files
+- API responses
+- Database exports
+- When exact round-trip is critical
+- Production data pipelines
+
+**Preprocessing Mode**
+- Data analysis and exploration
+- LLM prompts and training data
+- Temporary files and scripts
+- When readability is priority
+- Development and debugging
+
+### Advanced Key Quoting
+
+The encoding system automatically detects and quotes problematic keys:
+
+```typescript
+import { encodeTONL } from 'tonl';
+
+const data = {
+  "": "empty-key",
+  "#": "hash-key",
+  "@type": "at-key",
+  "key with spaces": "spaced-key",
+  "key:with:colons": "colon-key",
+  "key{braces}": "brace-key"
+};
+
+const tonl = encodeTONL(data);
+console.log(tonl);
+// ""[1]:
+//   "empty-key"
+// "#"[1]:
+//   "hash-key"
+// "@type"[1]:
+//   "at-key"
+// "key with spaces"[1]:
+//   "spaced-key"
+// "key:with:colons"[1]:
+//   "colon-key"
+// "key{braces}"[1]:
+//   "brace-key"
+```
+
+**Characters That Trigger Quoting:**
+- Empty strings `""`
+- Hash `#`
+- At symbol `@`
+- Colon `:`
+- Comma `,`
+- Braces `{}`
+- Quotes `"`
+- Leading/trailing spaces
+- Tab characters
+- Newline characters
 
 ---
 
@@ -1289,7 +1480,7 @@ console.log(tonlWithOptimizations);
 
 ## Version
 
-**Current version: 2.0.0**
+**Current version: 2.0.4**
 
 - ✅ Production ready and stable
 - ✅ Full feature set (query, modify, index, stream, schema, optimize)
@@ -1298,6 +1489,9 @@ console.log(tonlWithOptimizations);
 - ✅ TypeScript-first with full type safety
 - ✅ Browser and Node.js support
 - 🆕 Advanced optimization system with 10 strategies
+- 🆕 Dual-mode system for handling problematic JSON keys
+- 🆕 Enhanced CLI with preprocessing support
+- 🆕 Advanced key quoting for special characters
 
 ---
 

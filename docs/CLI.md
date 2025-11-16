@@ -2,6 +2,55 @@
 
 The TONL Command Line Interface provides powerful tools for converting, analyzing, and optimizing TONL data.
 
+## 🎉 v2.0.4 - Dual-Mode System
+
+The CLI now supports **dual-mode encoding** allowing you to choose between:
+
+- **Default Mode (Quoting Only)**: Perfect round-trip safety with automatic key quoting
+- **Preprocessing Mode**: Clean, readable output with key transformation
+
+### Dual-Mode Examples
+
+**Problematic JSON:**
+```json
+{"#":"}","":"","key with spaces":"value","@type":"special"}
+```
+
+**Default Mode (Perfect Round-trip):**
+```bash
+tonl encode problem.json
+```
+```tonl
+"#"[1]:
+  "}"
+""[1]:
+  ""
+"key with spaces"[1]:
+  value
+"@type"[1]:
+  special
+```
+
+**Preprocessing Mode (Clean Output):**
+```bash
+tonl encode problem.json --preprocess
+```
+```tonl
+#comment[1]:
+  "}"
+empty[1]:
+  ""
+key_with_spaces[1]:
+  value
+type[1]:
+  special
+```
+
+### When to Use Each Mode
+
+- **Default Mode**: Data integrity, configuration files, API responses, when exact round-trip matters
+- **Preprocessing Mode**: Data analysis, LLM prompts, temporary files, when readability is priority
+
 ## Installation
 
 ```bash
@@ -14,7 +63,7 @@ npm install -g tonl
 
 ## Overview
 
-The CLI provides seven main commands:
+The CLI provides eight main commands:
 
 - `tonl encode` - Convert JSON to TONL with optimization options
 - `tonl decode` - Convert TONL to JSON
@@ -57,6 +106,7 @@ tonl encode <input.json> [options]
 | `--indent` | `-i` | Indentation spaces | `2` |
 | `--smart` | `-s` | Use smart encoding | `false` |
 | `--stats` | | Show encoding statistics | `false` |
+| `--preprocess` | `-p` | Preprocess JSON keys for readability | `false` |
 
 ### Supported Delimiters
 
@@ -68,7 +118,7 @@ tonl encode <input.json> [options]
 ### Basic Usage
 
 ```bash
-# Basic encoding
+# Basic encoding (default mode with quoting)
 tonl encode data.json
 
 # Output to file
@@ -76,6 +126,9 @@ tonl encode data.json --out data.tonl
 
 # Use smart encoding with statistics
 tonl encode data.json --smart --stats
+
+# Preprocessing mode for problematic keys
+tonl encode problem-data.json --preprocess --out clean.tonl
 ```
 
 ### Advanced Usage
@@ -87,9 +140,12 @@ tonl encode users.json --delimiter "|" --include-types
 # Compact encoding for large datasets
 tonl encode large-dataset.json --indent 0 --smart
 
-# Batch processing
+# Preprocessing with custom delimiter
+tonl encode messy-data.json --preprocess --delimiter "|" --stats
+
+# Batch processing with preprocessing
 for file in *.json; do
-  tonl encode "$file" --out "${file%.json}.tonl" --smart --stats
+  tonl encode "$file" --preprocess --out "${file%.json}.tonl" --smart --stats
 done
 ```
 
@@ -118,6 +174,48 @@ tonl encode users.json
 users[2]{id:u32,name:str,role:str}:
   1, Alice, admin
   2, "Bob, Jr.", user
+```
+
+#### Dual-Mode Encoding Comparison
+
+**Problematic JSON (messy-keys.json):**
+```json
+{
+  "#": "hash-key",
+  "": "empty-key",
+  "key with spaces": "spaced-key",
+  "@type": "at-symbol-key"
+}
+```
+
+**Default Mode (Perfect Round-trip):**
+```bash
+tonl encode messy-keys.json
+```
+```tonl
+"#"[1]:
+  hash-key
+""[1]:
+  empty-key
+"key with spaces"[1]:
+  spaced-key
+"@type"[1]:
+  at-symbol-key
+```
+
+**Preprocessing Mode (Clean Output):**
+```bash
+tonl encode messy-keys.json --preprocess
+```
+```tonl
+#comment[1]:
+  hash-key
+empty[1]:
+  empty-key
+key_with_spaces[1]:
+  spaced-key
+type[1]:
+  at-symbol-key
 ```
 
 #### Smart Encoding
@@ -391,8 +489,11 @@ Recommendations:
 ### Basic Data Pipeline
 
 ```bash
-# Convert JSON to optimized TONL
+# Convert JSON to optimized TONL (default mode)
 tonl encode input.json --smart --stats --out optimized.tonl
+
+# Clean up problematic keys with preprocessing
+tonl encode messy-input.json --preprocess --smart --stats --out clean.tonl
 
 # Use the optimized file in your application
 your-app --data optimized.tonl

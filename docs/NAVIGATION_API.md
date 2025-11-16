@@ -1,8 +1,8 @@
 # TONL Navigation API Reference
 
-**Version:** 1.0.0
+**Version:** 2.0.4
 **Status:** Stable & Production Ready
-**Last Updated:** 2025-11-04
+**Last Updated:** 2025-11-16
 
 ## Overview
 

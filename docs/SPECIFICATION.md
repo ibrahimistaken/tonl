@@ -1,25 +1,32 @@
-# TONL Format Specification v1.0.3
+# TONL Format Specification v2.0.4
 
-**Version:** 1.0.0
+**Version:** 2.0.4
 **Status:** Stable & Production Ready
-**Last Updated:** 2025-11-04
-
+**Last Updated:** 2025-11-16
 
 This document provides the complete technical specification for the Token-Optimized Notation Language (TONL) format.
+
+## 🎉 What's New in v2.0.4
+
+- **Dual-Mode Encoding**: Default quoting vs preprocessing for problematic keys
+- **Enhanced Key Handling**: Support for `#`, `@`, spaces, and special characters
+- **Advanced Quoting Rules**: Comprehensive quoting for round-trip safety
+- **CLI Integration**: `--preprocess` flag for automatic key transformation
 
 ## Table of Contents
 
 1. [Overview](#overview)
 2. [Format Structure](#format-structure)
-3. [Lexical Elements](#lexical-elements)
-4. [Data Types](#data-types)
-5. [Object Encoding](#object-encoding)
-6. [Array Encoding](#array-encoding)
-7. [String Handling](#string-handling)
-8. [Type System](#type-system)
-9. [Parsing Rules](#parsing-rules)
-10. [Error Handling](#error-handling)
-11. [Examples](#examples)
+3. [Dual-Mode System](#dual-mode-system-v204)
+4. [Lexical Elements](#lexical-elements)
+5. [Data Types](#data-types)
+6. [Object Encoding](#object-encoding)
+7. [Array Encoding](#array-encoding)
+8. [String Handling](#string-handling)
+9. [Type System](#type-system)
+10. [Parsing Rules](#parsing-rules)
+11. [Error Handling](#error-handling)
+12. [Examples](#examples)
 
 ## Overview
 
@@ -88,6 +95,111 @@ data[3]{id:u32,name:str}:
   2|Bob
   3|Carol
 ```
+
+## Dual-Mode System v2.0.4
+
+The TONL format supports dual-mode encoding to handle problematic JSON keys that would otherwise cause parsing or readability issues.
+
+### Mode 1: Default (Quoting Only)
+
+In default mode, problematic keys are automatically quoted to ensure perfect round-trip compatibility while maintaining TONL syntax validity.
+
+#### Quoting Rules
+
+A key **must be quoted** if it contains any of the following:
+- Empty string `""`
+- Hash symbol `#`
+- At symbol `@`
+- Colon `:`
+- Comma `,`
+- Opening brace `{`
+- Closing brace `}`
+- Quote character `"`
+- Leading or trailing whitespace
+- Tab character `\t`
+- Newline characters `\n` or `\r`
+
+#### Quoting Syntax
+
+```
+"<quoted_key>"[count]:
+  value1
+  value2
+```
+
+**Examples:**
+
+```tonl
+# Problematic keys in default mode
+""[1]:
+  empty-value
+"#"[1]:
+  hash-value
+"@type"[1]:
+  at-symbol-value
+"key with spaces"[1]:
+  spaced-value
+"key:with:colons"[1]:
+  colon-value
+```
+
+### Mode 2: Preprocessing (Key Transformation)
+
+In preprocessing mode, problematic keys are transformed into valid identifiers using the following rules:
+
+#### Transformation Rules
+
+1. **Empty keys** `""` → `"empty"`
+2. **Hash keys** `"#"` → `"comment"`
+3. **At symbol keys** `"@type"` → `"type"`
+4. **Spaces** → Underscores (`"key with spaces"` → `"key_with_spaces"`)
+5. **Special characters** → Removed or replaced
+6. **Reserved words** → Suffix with underscore (`"if"` → `"if_"`)
+
+#### Preprocessing Examples
+
+**Input JSON:**
+```json
+{
+  "#": "hash-value",
+  "": "empty-value",
+  "key with spaces": "spaced-value",
+  "@type": "at-symbol-value"
+}
+```
+
+**Output TONL (preprocessed):**
+```tonl
+comment[1]:
+  "hash-value"
+empty[1]:
+  "empty-value"
+key_with_spaces[1]:
+  "spaced-value"
+type[1]:
+  "at-symbol-value"
+```
+
+### Mode Selection
+
+#### Use Default Mode When:
+- Data integrity is critical
+- Exact round-trip conversion is required
+- Processing configuration files or API data
+- Production data pipelines
+
+#### Use Preprocessing Mode When:
+- Readability is priority
+- Preparing data for LLM consumption
+- Data analysis and exploration
+- Development and debugging
+
+### Implementation Notes
+
+- **Default mode** is the recommended choice for production use
+- **Preprocessing mode** is opt-in via `--preprocess` flag in CLI
+- Both modes maintain valid TONL syntax
+- Both modes support bidirectional conversion with JSON
 
 ## Lexical Elements
 
