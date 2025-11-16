@@ -493,10 +493,26 @@ export function calculateCompressionMetrics(
   const originalTokens = estimateTokens(original, tokenizer);
   const compressedTokens = estimateTokens(compressed, tokenizer);
 
-  const byteCompressionRatio = originalBytes / compressedBytes;
-  const tokenCompressionRatio = originalTokens / compressedTokens;
-  const byteSavingsPercent = ((originalBytes - compressedBytes) / originalBytes) * 100;
-  const tokenSavingsPercent = ((originalTokens - compressedTokens) / originalTokens) * 100;
+  // BUG-NEW-004 FIX: Handle division by zero gracefully
+  // When denominator is 0, compression ratio is:
+  //  - Infinity if numerator > 0 (perfect compression or decompression)
+  //  - 1 if both are 0 (no change, both empty)
+  const byteCompressionRatio = compressedBytes === 0
+    ? (originalBytes === 0 ? 1 : Infinity)
+    : originalBytes / compressedBytes;
+
+  const tokenCompressionRatio = compressedTokens === 0
+    ? (originalTokens === 0 ? 1 : Infinity)
+    : originalTokens / compressedTokens;
+
+  // Savings percent: when original is 0, there's no savings to calculate (0%)
+  const byteSavingsPercent = originalBytes === 0
+    ? 0
+    : ((originalBytes - compressedBytes) / originalBytes) * 100;
+
+  const tokenSavingsPercent = originalTokens === 0
+    ? 0
+    : ((originalTokens - compressedTokens) / originalTokens) * 100;
 
   return {
     originalBytes,
